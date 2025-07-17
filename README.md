@@ -1,0 +1,1 @@
+# inatex-bmkg
