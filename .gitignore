@@ -1,0 +1,21 @@
+# Folder Composer
+/vendor/
+
+# Folder yang dibuat oleh sistem atau template
+/update/
+/update_pack/
+/uploads/
+
+# Folder cache dan log CodeIgniter
+/application/cache/
+/application/logs/
+
+# File konfigurasi lokal yang berisi data sensitif
+.env
+
+# File yang dibuat oleh sistem operasi atau IDE
+.DS_Store
+Thumbs.db
+/nbproject/
+.idea/
+.vscode/
