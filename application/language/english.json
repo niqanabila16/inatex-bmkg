@@ -647,7 +647,7 @@
     "select_none_to_create_a_parent_category": "Select none to create a parent category",
     "high_quality_videos": "High quality videos",
     "life_time_access": "Life time access",
-    "already_purchased": "Already purchased",
+    "already_purchased": "Already enrolled",
     "pay_for": "Pay for",
     "your_payment_has_been_successful": "Your payment has been successful",
     "preview": "Preview",
@@ -1299,5 +1299,9 @@
     "questions:": "Questions:",
     "answer": "Answer",
     "upload_file": "Upload file",
-    "enter_your_private_note": "Enter your private note"
+    "enter_your_private_note": "Enter your private note",
+    "ina-tex": "Ina-tex",
+    "everything's_farther_in_jakarta": "Everything's Farther In Jakarta",
+    "start_learning_earthquake_and_tsunami_mitigation": "Start Learning Earthquake And Tsunami Mitigation",
+    "inatex_merupakan_portal_edukasi_mitigasi_gempabumi_dan_tsunami_bmkg_yang_menyediakan_materi_edukasi_dan_database_pelaksanaan_kegiatan_edukasi_mitigasi_gempabumi_dan_tsunami_bmkg": "Inatex Merupakan Portal Edukasi Mitigasi Gempabumi Dan Tsunami Bmkg Yang Menyediakan Materi Edukasi Dan Database Pelaksanaan Kegiatan Edukasi Mitigasi Gempabumi Dan Tsunami Bmkg"
 }
