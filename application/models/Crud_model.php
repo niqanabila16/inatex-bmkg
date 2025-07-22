@@ -1839,6 +1839,13 @@ class Crud_model extends CI_Model
             } else {
                 $data['date_added'] = strtotime(date('D, d-M-Y'));
                 $this->db->insert('enrol', $data);
+                $this->db->insert('watch_histories', [
+                    'course_id' => $course_id,
+                    'student_id' => $user_id,
+                    'course_progress' => 0,
+                    'date_added' => $data['date_added'],
+                    'date_updated' => $data['date_added']
+                ]);
                 $this->session->set_flashdata('flash_message', get_phrase('successfully_enrolled'));
             }
         } else {
