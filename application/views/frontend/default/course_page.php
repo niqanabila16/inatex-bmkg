@@ -330,7 +330,7 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
 
                     
                     <div class="description">
-                      <?php echo ellipsis(strip_tags($instructor_details['biography']), 180); ?>
+                      <?php echo ellipsis(strip_tags($instructor_details['biography'] or ""), 180); ?>
                     </div>
                 </div>
             </div>
