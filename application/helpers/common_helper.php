@@ -93,7 +93,7 @@ if (!function_exists('custom_date')) {
 
 if (! function_exists('get_past_time')) {
     function get_past_time( $time = "" ) {
-        $time_difference = time() - $time;
+        $time_difference = time() - (gettype($time) == "string" ? strtotime($time) : $time);
 
         if( $time_difference < 1 ) { return 'less than 1 second ago'; }
 
