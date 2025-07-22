@@ -1999,7 +1999,7 @@ class Crud_model extends CI_Model
         if($reviews->num_rows() > 0){
             return $reviews->row_array();
         }else{
-            return array('rating' => 0);
+            return array('rating' => 0, 'review' => '');
         }
     }
 
