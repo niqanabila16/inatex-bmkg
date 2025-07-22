@@ -154,13 +154,13 @@
 
             <?php else: ?>
                 <?php if ($lesson_details['attachment_type'] == 'iframe'): ?>
-                    <div class="mt-5 w-100">
+                    <div class="mt-10 w-100">
                         <div class="embed-responsive embed-responsive-16by9">
                           <iframe class="embed-responsive-item" width="100%" height="550px" src="<?php echo $lesson_details['attachment']; ?>" allowfullscreen></iframe>
                         </div>
                     </div>
                 <?php else: ?>
-                    <div class="mt-5 text-center">
+                    <div class="mt-10 text-center">
                         <?php if($lesson_details['attachment_type'] == 'img'):
                             $img_size = getimagesize('uploads/lesson_files/'.$lesson_details['attachment']);
                             ?>
