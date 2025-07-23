@@ -509,11 +509,11 @@ class Crud_model extends CI_Model
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
         $data['category_id'] = $category_details['parent'];
         $data['requirements'] = $requirements;
-        $data['price'] = $this->input->post('price');
-        $data['discount_flag'] = $this->input->post('discount_flag');
-        $data['discounted_price'] = $this->input->post('discounted_price');
+        $data['price'] = 0; // `$this->input->post('price');`
+        $data['discount_flag'] = null; // `$this->input->post('discount_flag');`
+        $data['discounted_price'] = 0; // `$this->input->post('discounted_price');`
         $data['level'] = $this->input->post('level');
-        $data['is_free_course'] = $this->input->post('is_free_course');
+        $data['is_free_course'] = 1; // `$this->input->post('is_free_course');`
         $data['video_url'] = html_escape($this->input->post('course_overview_url'));
 
         $enable_drip_content = $this->input->post('enable_drip_content');
@@ -1314,7 +1314,7 @@ class Crud_model extends CI_Model
 
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = 1;
+        $data['is_free'] = 1; // htmlspecialchars($this->input->post('free_lesson'));
 
 
         $this->db->insert('lesson', $data);
@@ -1586,7 +1586,7 @@ class Crud_model extends CI_Model
 
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = 1;
+        $data['is_free'] = 1; // htmlspecialchars($this->input->post('free_lesson'));
 
         $this->db->where('id', $lesson_id);
         $this->db->update('lesson', $data);
