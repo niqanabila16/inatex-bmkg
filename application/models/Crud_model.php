@@ -5,6 +5,9 @@ if (file_exists("application/aws-module/aws-autoloader.php")) {
     include APPPATH . 'aws-module/aws-autoloader.php';
 }
 //v5.7
+/**
+ * @property CI_input $input
+ */
 class Crud_model extends CI_Model
 {
 
@@ -658,10 +661,10 @@ class Crud_model extends CI_Model
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
         $data['category_id'] = $category_details['parent'];
         $data['requirements'] = $requirements;
-        $data['is_free_course'] = $this->input->post('is_free_course');
-        $data['price'] = $this->input->post('price');
-        $data['discount_flag'] = $this->input->post('discount_flag');
-        $data['discounted_price'] = $this->input->post('discounted_price');
+        // $data['is_free_course'] = $this->input->post('is_free_course');
+        // $data['price'] = $this->input->post('price');
+        // $data['discount_flag'] = $this->input->post('discount_flag');
+        // $data['discounted_price'] = $this->input->post('discounted_price');
         $data['level'] = $this->input->post('level');
         $data['video_url'] = $this->input->post('course_overview_url');
         
