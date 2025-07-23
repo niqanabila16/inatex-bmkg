@@ -179,7 +179,7 @@
 
 
 
-                                                <?php if ($latest_course['is_free_course'] == 1) : ?>
+                                                <!-- <?php if ($latest_course['is_free_course'] == 1) : ?>
                                                     <p class="price text-right d-inline-block float-end"><?php echo site_phrase('free'); ?></p>
                                                 <?php else : ?>
                                                     <?php if ($latest_course['discount_flag'] == 1) : ?>
@@ -187,7 +187,7 @@
                                                     <?php else : ?>
                                                         <p class="price text-right d-inline-block float-end"><?php echo currency($latest_course['price']); ?></p>
                                                     <?php endif; ?>
-                                                <?php endif; ?>
+                                                <?php endif; ?> -->
                                             </div>
                                         </div>
                                     </div>
