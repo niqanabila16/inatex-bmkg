@@ -66,13 +66,6 @@ $sections = $this->crud_model->get_section('course', $param3)->result_array();
         <textarea name="summary" id="lesson_summary" class="form-control"><?php echo htmlspecialchars_decode($lesson_details['summary']); ?></textarea>
     </div>
 
-    <div class="form-group">
-        <label><?php echo get_phrase('do_you_want_to_keep_it_free_as_a_preview_lesson'); ?>?</label>
-        <br>
-        <input type="checkbox" name="free_lesson" id="free_lesson" value="1" <?php if($lesson_details['is_free'])echo 'checked'; ?>>
-        <label for="free_lesson"><?php echo get_phrase('mark_as_free_lesson'); ?></label>
-    </div>
-
     <div class="text-center">
         <button class = "btn btn-success" type="submit" name="button"><?php echo get_phrase('update_lesson'); ?></button>
     </div>

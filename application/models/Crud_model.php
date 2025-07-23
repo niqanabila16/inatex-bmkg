@@ -1314,7 +1314,7 @@ class Crud_model extends CI_Model
 
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = htmlspecialchars($this->input->post('free_lesson'));
+        $data['is_free'] = 1;
 
 
         $this->db->insert('lesson', $data);
@@ -1586,7 +1586,7 @@ class Crud_model extends CI_Model
 
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = htmlspecialchars($this->input->post('free_lesson'));
+        $data['is_free'] = 1;
 
         $this->db->where('id', $lesson_id);
         $this->db->update('lesson', $data);
