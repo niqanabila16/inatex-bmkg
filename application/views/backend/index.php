@@ -13,7 +13,12 @@
     <?php include 'metas.php'; ?>
     <!-- all the css files -->
     <?php include 'includes_top.php'; ?>
+
+    <!-- Leaflet library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
+
 <body data-layout="detached">
     <!-- HEADER -->
     <?php include 'header.php'; ?>
@@ -38,4 +43,27 @@
     <?php include 'modal.php'; ?>
     <?php include 'common_scripts.php'; ?>
 </body>
+
+<!--
+Ingat! ID peta kita adalah `slg-map`.
+Kalau mau ganti ID, ganti juga yang di `\application\views\backend\admin\dashboard.php`.
+-->
+<style>#slg-map { height: 180px; }</style>
+<script>
+    var map = L.map('slg-map').setView([0, 120], 4);
+
+    // Wajib dibaca buat pengguna OpenStreetMap:
+    // https://operations.osmfoundation.org/policies/tiles/
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 64,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Contoh pin lokasi (bisa buat penanda lokasi SLG).
+    // Nanti kalau ikon kastemnya sudah ada, bisa diset sesuai
+    // `https://leafletjs.com/examples/custom-icons/`.
+    L.marker([0, 120])
+        .bindPopup("<b>Judul</b><br>Menunggu metadata…")
+        .addTo(map);
+</script>
 </html>

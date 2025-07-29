@@ -19,12 +19,13 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-
                 <h4 class="header-title mb-4"><?php echo get_phrase('admin_revenue_this_year'); ?></h4>
 
-                <div class="mt-3 chartjs-chart" style="height: 320px;">
+                <div id="slg-map" style="height: 400px;"></div>
+
+                <!-- <div class="mt-3 chartjs-chart" style="height: 320px;">
                     <canvas id="task-area-chart"></canvas>
-                </div>
+                </div> -->
             </div> <!-- end card body-->
         </div> <!-- end card -->
     </div><!-- end col-->
