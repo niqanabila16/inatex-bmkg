@@ -21,6 +21,21 @@
             <div class="card-body">
                 <h4 class="header-title mb-4"><?php echo get_phrase('admin_revenue_this_year'); ?></h4>
 
+                <!-- <div class="col-xl-2"> -->
+                    <div class="form-group row">
+                        <label class="col-md-1 col-form-label" for="year"><?php echo get_phrase('year'); ?>:</label>
+                        <div class="col-md-3">
+                        <select class="form-control select2" data-toggle="select2" name="year" id='year'>
+                            <option value="all" <?php if ($year == 'all') echo 'selected'; ?>><?php echo get_phrase('all'); ?></option>
+                            <option value="2025" <?php if ($year == '2025') echo 'selected'; ?>>2025</option>
+                            <option value="2024" <?php if ($year == '2024') echo 'selected'; ?>>2024</option>
+                            <option value="2023" <?php if ($year == '2023') echo 'selected'; ?>>2023</option>
+                        </select>
+                        </div>
+                        
+                    </div>
+                <!-- </div> -->
+
                 <div id="slg-map" style="height: 400px;"></div>
 
                 <!-- <div class="mt-3 chartjs-chart" style="height: 320px;">

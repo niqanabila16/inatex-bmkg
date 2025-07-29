@@ -1,6 +1,15 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * @property CI_Input $input
+ * @property CI_Loader $load
+ * @property CI_Output $output
+ * @property CI_Session $session
+ * @property Crud_model $crud_model
+ * @property Lazyloaddata_model $lazyload
+ * @property User_model $user_model
+ */
 class Admin extends CI_Controller
 {
     public function __construct()
@@ -37,6 +46,7 @@ class Admin extends CI_Controller
         }
         $page_data['page_name'] = 'dashboard';
         $page_data['page_title'] = get_phrase('dashboard');
+        $page_data['year'] = $_GET["year"] ?? "all";
         $this->load->view('backend/index.php', $page_data);
     }
 
@@ -654,11 +664,13 @@ class Admin extends CI_Controller
             8 => 'course_id'
         );
 
-        // Coming from databale itself. Limit is the visible number of data
+        // Coming from databale itself. Limit is the visible number of data.
+        // Dari mana dataŋnya `length`, `start`, dan `order` ini?
         $limit = html_escape($this->input->post('length'));
         $start = html_escape($this->input->post('start'));
         $order = "";
-        $dir   = $this->input->post('order')[0]['dir'];
+        // $dir   = $this->input->post('order')[0]['dir'];
+        $dir = "desc"; // Sëmëntara diganti dulu sama yaŋ ini.
 
         $totalData = $this->lazyload->count_all_courses($filter_data);
         $totalFiltered = $totalData;

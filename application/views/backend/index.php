@@ -63,12 +63,20 @@ Kalau mau ganti ID, ganti juga yang di `\application\views\backend\admin\dashboa
     // Nanti kalau ikon kastemnya sudah ada, bisa diset sesuai
     // `https://leafletjs.com/examples/custom-icons/`.
     const locations = [
-        [0, 120], [6, 120], [6, 126], 
-        [0, 126], [-6, 126], [-6, 120], 
-        [-6, 114], [0, 114], [6, 114]
+        {year: 2025, location: [0, 120]}, 
+        {year: 2025, location: [6, 120]}, 
+        {year: 2025, location: [6, 126]}, 
+        {year: 2024, location: [0, 126]}, 
+        {year: 2024, location: [-6, 126]}, 
+        {year: 2024, location: [-6, 120]},
+        {year: 2023, location: [-6, 114]}, 
+        {year: 2023, location: [0, 114]}, 
+        {year: 2023, location: [6, 114]}
     ];
-    locations.forEach(element => {
-        L.marker(element)
+    var year = $('#year').find(":selected").val();
+    locations.filter(n => year === "all" ? true : n.year === Number(year)
+    ).map(n => n.location).forEach(n => {
+        L.marker(n)
         .bindPopup("<b>Judul</b><br>Menunggu metadata…")
         .addTo(map);
     });
