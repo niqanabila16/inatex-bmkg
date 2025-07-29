@@ -62,8 +62,15 @@ Kalau mau ganti ID, ganti juga yang di `\application\views\backend\admin\dashboa
     // Contoh pin lokasi (bisa buat penanda lokasi SLG).
     // Nanti kalau ikon kastemnya sudah ada, bisa diset sesuai
     // `https://leafletjs.com/examples/custom-icons/`.
-    L.marker([0, 120])
+    const locations = [
+        [0, 120], [6, 120], [6, 126], 
+        [0, 126], [-6, 126], [-6, 120], 
+        [-6, 114], [0, 114], [6, 114]
+    ];
+    locations.forEach(element => {
+        L.marker(element)
         .bindPopup("<b>Judul</b><br>Menunggu metadata…")
         .addTo(map);
+    });
 </script>
 </html>
