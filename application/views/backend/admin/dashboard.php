@@ -22,18 +22,17 @@
                 <h4 class="header-title mb-4"><?php echo get_phrase('admin_revenue_this_year'); ?></h4>
 
                 <!-- <div class="col-xl-2"> -->
-                    <div class="form-group row">
+                    <form class="form-group row" action="<?php echo site_url('admin/dashboard'); ?>" method="get">
                         <label class="col-md-1 col-form-label" for="year"><?php echo get_phrase('year'); ?>:</label>
                         <div class="col-md-3">
-                        <select class="form-control select2" data-toggle="select2" name="year" id='year'>
-                            <option value="all" <?php if ($year == 'all') echo 'selected'; ?>><?php echo get_phrase('all'); ?></option>
-                            <option value="2025" <?php if ($year == '2025') echo 'selected'; ?>>2025</option>
-                            <option value="2024" <?php if ($year == '2024') echo 'selected'; ?>>2024</option>
-                            <option value="2023" <?php if ($year == '2023') echo 'selected'; ?>>2023</option>
+                        <select class="form-control select2" data-toggle="select2" name="year_vie" id="year_vie">
+                            <option value="all"><?php echo get_phrase('all'); ?></option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
                         </select>
                         </div>
-                        
-                    </div>
+                </form>
                 <!-- </div> -->
 
                 <div id="slg-map" style="height: 400px;"></div>

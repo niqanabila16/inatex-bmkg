@@ -46,7 +46,18 @@ class Admin extends CI_Controller
         }
         $page_data['page_name'] = 'dashboard';
         $page_data['page_title'] = get_phrase('dashboard');
-        $page_data['year'] = $_GET["year"] ?? "all";
+        $page_data['locations'] = json_encode([
+            ["year" => 2025, "location" => [0, 120]], 
+            ["year" => 2025, "location" => [6, 120]],
+            ["year" => 2025, "location" => [6, 126]],
+            ["year" => 2024, "location" => [0, 126]],
+            ["year" => 2024, "location" => [-6, 126]],
+            ["year" => 2024, "location" => [-6, 120]],
+            ["year" => 2023, "location" => [-6, 114]],
+            ["year" => 2023, "location" => [0, 114]],
+            ["year" => 2023, "location" => [6, 114]]
+        ]);
+
         $this->load->view('backend/index.php', $page_data);
     }
 
