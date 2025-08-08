@@ -1,0 +1,233 @@
+Table addons {
+  id int(11) [increment, not null]
+  name varchar(255) [not null]
+  unique_identifier varchar(255) [not null]
+  version varchar(255)
+  status int(11) [not null]
+  created_at int(11)
+  updated_at int(11)
+  about longtext
+  purchase_code varchar(255)
+  user_id int(11)
+  address longtext
+  phone varchar(255)
+  message longtext
+  document varchar(255)
+  title varchar(255) [not null]
+  subtitle varchar(255) [not null]
+  slug varchar(255) [not null]
+  added_date varchar(100) [not null]
+  blog_id int(11) [not null]
+  parent_id int(11) [not null]
+  comment longtext [not null]
+  likes longtext [not null]
+  updated_date varchar(100) [not null]
+  blog_category_id int(11) [not null]
+  keywords text [not null]
+  description longtext [not null]
+  thumbnail varchar(100) [not null]
+  banner varchar(100) [not null]
+  is_popular int(11) [not null]
+  code varchar(255)
+  parent int(11)
+  date_added int(11)
+  last_modified int(11)
+  font_awesome_class varchar(255)
+}
+
+Table ci_sessions {
+  id varchar(40) [not null]
+  ip_address varchar(45) [not null]
+  timestamp int(10) [not null]
+  data blob [not null]
+}
+
+Table comment {
+  id int(11) [increment, not null]
+  body longtext
+  user_id int(11)
+  commentable_id int(11)
+  commentable_type varchar(50)
+  date_added int(11)
+  last_modified int(11)
+  code varchar(255)
+  discount_percentage varchar(255)
+  created_at int(11)
+  expiry_date int(11)
+  title varchar(255)
+  short_description longtext
+  description longtext
+  outcomes longtext
+  language varchar(255)
+  category_id int(11)
+  sub_category_id int(11)
+  section longtext
+  requirements longtext
+  price double
+  discount_flag int(11)
+  discounted_price int(11)
+  level varchar(50)
+  thumbnail varchar(255)
+  video_url varchar(255)
+  course_type varchar(255)
+  is_top_course int(11)
+  is_admin int(11)
+  status varchar(255)
+  course_overview_provider varchar(255)
+  meta_keywords longtext
+  meta_description longtext
+  is_free_course int(11)
+  multi_instructor int(11) [not null]
+  enable_drip_content int(11) [not null]
+  creator int(11)
+}
+
+Table currency {
+  id int(11) [increment, not null]
+  name varchar(255)
+  code varchar(255)
+  symbol varchar(255)
+  paypal_supported int(11)
+  stripe_supported int(11)
+}
+
+Table enrol {
+  id int(11) [increment, not null]
+  user_id int(11)
+  course_id int(11)
+  date_added int(11)
+  last_modified int(11)
+}
+
+Table frontend_settings {
+  id int(11) [increment, not null]
+  key varchar(255)
+  value longtext
+}
+
+Table language {
+  phrase_id int(11) [increment, not null]
+  phrase longtext
+  english longtext
+  title varchar(255)
+  duration varchar(255)
+  course_id int(11)
+  section_id int(11)
+  video_type varchar(255)
+  video_url varchar(255)
+  date_added int(11)
+  last_modified int(11)
+  lesson_type varchar(255)
+  attachment longtext
+  attachment_type varchar(255)
+  summary longtext
+  is_free int(11) [not null]
+  order int(11) [not null]
+  video_type_for_mobile_application varchar(255)
+  video_url_for_mobile_application varchar(255)
+  duration_for_mobile_application varchar(255)
+}
+
+Table log {
+  id int(11) [not null]
+  from varchar(255) [increment, not null]
+  message_thread_code longtext
+  message longtext
+  sender longtext
+  timestamp longtext
+  read_status int(11)
+}
+
+Table message_thread {
+  message_thread_id int(11) [increment, not null]
+  message_thread_code longtext
+  sender varchar(255)
+  receiver varchar(255)
+  last_message_timestamp longtext
+}
+
+Table payment {
+  id int(11) [increment, not null]
+  user_id int(11)
+  payment_type varchar(50)
+  course_id int(11)
+  amount double
+  date_added int(11)
+  last_modified int(11)
+  admin_revenue varchar(255)
+  instructor_revenue varchar(255)
+  instructor_payment_status int(11)
+  transaction_id varchar(255)
+  session_id varchar(255)
+  coupon varchar(255)
+  status int(11)
+  admin_id int(11)
+  permissions longtext
+  quiz_id int(11)
+  title longtext
+  type varchar(255)
+  number_of_options int(11)
+  options longtext
+  correct_answers longtext
+  order int(11) [not null]
+  rating double
+  ratable_id int(11)
+  ratable_type varchar(50)
+  review longtext
+}
+
+Table role {
+  id int(11) [increment, not null]
+  name varchar(255)
+  date_added int(11)
+  last_modified int(11)
+}
+
+Table section {
+  id int(11) [increment, not null]
+  title varchar(255)
+  course_id int(11)
+  order int(11) [not null]
+}
+
+Table settings {
+  id int(11) [increment, not null]
+  key varchar(255)
+  value longtext
+}
+
+Table tag {
+  id int(11) [increment, not null]
+  tag varchar(255)
+  tagable_id int(11)
+  tagable_type varchar(255)
+  date_added int(11)
+  last_modified int(11)
+  first_name varchar(255)
+  last_name varchar(255)
+  email varchar(50)
+  password varchar(255)
+  skills longtext [not null]
+  social_links longtext
+  biography longtext
+  role_id int(11)
+  wishlist longtext
+  title longtext
+  payment_keys longtext [not null]
+  verification_code longtext
+  status int(11)
+  is_instructor int(11)
+  image varchar(255)
+}
+
+Table watch_histories {
+  watch_history_id int(11) [increment, not null]
+  course_id int(11) [not null]
+  student_id int(11) [not null]
+  completed_lesson longtext [not null]
+  course_progress int(11) [not null]
+  watching_lesson_id int(11) [not null]
+  quiz_result longtext [not null]
+  date_added varchar(100)
+  date_updated varchar(100)
+}

@@ -54,7 +54,14 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+
+// diubah karena jika tidak mengatur CI_ENV di $_SERVER, maka default-nya production, dan error tidak akan ditampilkan
+// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+define('ENVIRONMENT', 'development');
 
 /*
  *---------------------------------------------------------------

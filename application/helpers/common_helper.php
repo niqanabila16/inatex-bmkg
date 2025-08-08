@@ -376,26 +376,26 @@ if (!function_exists('lesson_progress')) {
         }
     }
 }
-if (!function_exists('course_progress')) {
-    function course_progress($course_id = "", $user_id = "", $return_type = "")
-    {
-        $CI    = &get_instance();
-        $CI->load->database();
-        if ($user_id == "") {
-            $user_id = $CI->session->userdata('user_id');
-        }
+// if (!function_exists('course_progress')) {
+//     function course_progress($course_id = "", $user_id = "", $return_type = "")
+//     {
+//         $CI    = &get_instance();
+//         $CI->load->database();
+//         if ($user_id == "") {
+//             $user_id = $CI->session->userdata('user_id');
+//         }
 
-        $watch_history = $CI->crud_model->get_watch_histories($user_id, $course_id)->row_array();
+//         $watch_history = $CI->crud_model->get_watch_histories($user_id, $course_id)->row_array();
 
-        if ($return_type == "completed_lesson_ids") {
-            return json_decode($watch_history['completed_lesson']);
-        } elseif($watch_history['course_progress'] > 0){
-            return $watch_history['course_progress'];
-        }else{
-            return 0;
-        }
-    }
-}
+//         if ($return_type == "completed_lesson_ids") {
+//             return json_decode($watch_history['completed_lesson']);
+//         } elseif($watch_history['course_progress'] > 0){
+//             return $watch_history['course_progress'];
+//         }else{
+//             return 0;
+//         }
+//     }
+// }
 
 // RANDOM NUMBER GENERATOR FOR ELSEWHERE
 if (!function_exists('random')) {
