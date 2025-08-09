@@ -116,7 +116,7 @@ class Login extends CI_Controller
         $data['social_links'] = json_encode($social_links);
         $data['role_id']  = 2;
 
-        $data['payment_keys'] = '{"paypal":{"production_client_id":"","production_secret_key":""},"stripe":{"public_live_key":"","secret_live_key":""},"razorpay":{"key_id":"","secret_key":""}}';
+        // $data['payment_keys'] = '{"paypal":{"production_client_id":"","production_secret_key":""},"stripe":{"public_live_key":"","secret_live_key":""},"razorpay":{"key_id":"","secret_key":""}}';
 
         $validity = $this->user_model->check_duplication('on_create', $data['email']);
 

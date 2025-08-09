@@ -12,6 +12,7 @@
 
 # File konfigurasi lokal yang berisi data sensitif
 .env
+*.sql
 
 # File yang dibuat oleh sistem operasi atau IDE
 .DS_Store

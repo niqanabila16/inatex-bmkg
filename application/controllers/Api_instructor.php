@@ -413,26 +413,26 @@ class Api_instructor extends REST_Controller {
     return $this->set_response($response, REST_Controller::HTTP_OK);
   }
 
-  public function details_of_sales_report_get(){
-    $response = array();
+  // public function details_of_sales_report_get(){
+  //   $response = array();
 
-    if(isset($_GET['payment_id']) && !empty($_GET['payment_id'])){
-    $payment_id = $_GET['payment_id'];
-    $response = $this->api_instructor_model->details_of_sales_report_get($payment_id);
-    }
-    return $this->set_response($response, REST_Controller::HTTP_OK);
-  }
+  //   if(isset($_GET['payment_id']) && !empty($_GET['payment_id'])){
+  //   $payment_id = $_GET['payment_id'];
+  //   $response = $this->api_instructor_model->details_of_sales_report_get($payment_id);
+  //   }
+  //   return $this->set_response($response, REST_Controller::HTTP_OK);
+  // }
 
-  public function payout_report_get(){
-    $response = array();
+  // public function payout_report_get(){
+  //   $response = array();
 
-    if(isset($_GET['auth_token']) && !empty($_GET['auth_token'])){
-      $auth_token = $_GET['auth_token'];
-      $user_details = json_decode($this->token_data_get($auth_token), true);
-      $response = $this->api_instructor_model->payout_report_get($user_details['user_id']);
-    }
-    return $this->set_response($response, REST_Controller::HTTP_OK);
-  }
+  //   if(isset($_GET['auth_token']) && !empty($_GET['auth_token'])){
+  //     $auth_token = $_GET['auth_token'];
+  //     $user_details = json_decode($this->token_data_get($auth_token), true);
+  //     $response = $this->api_instructor_model->payout_report_get($user_details['user_id']);
+  //   }
+  //   return $this->set_response($response, REST_Controller::HTTP_OK);
+  // }
 
   public function add_withdrawal_request_post() {
     $response = array();

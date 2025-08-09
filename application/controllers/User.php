@@ -1,6 +1,16 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ * @property CI_DB_query_builder    $db
+ * @property Crud_model             $crud_model
+ * @property User_model             $user_model
+ * @property CI_Input               $input
+ * @property LazyLoader             $lazy_loader
 
+ */
 class User extends CI_Controller
 {
     public function __construct()
@@ -321,33 +331,33 @@ class User extends CI_Controller
         }
     }
 
-    public function payout_settings($param1 = "")
-    {
-        if ($this->session->userdata('user_login') != true) {
-            redirect(site_url('login'), 'refresh');
-        }
+    // public function payout_settings($param1 = "")
+    // {
+    //     if ($this->session->userdata('user_login') != true) {
+    //         redirect(site_url('login'), 'refresh');
+    //     }
 
-        if ($param1 == 'paypal_settings') {
-            $this->user_model->update_instructor_paypal_settings($this->session->userdata('user_id'));
-            $this->session->set_flashdata('flash_message', get_phrase('updated'));
-            redirect(site_url('user/payout_settings'), 'refresh');
-        }
-        if ($param1 == 'stripe_settings') {
-            $this->user_model->update_instructor_stripe_settings($this->session->userdata('user_id'));
-            $this->session->set_flashdata('flash_message', get_phrase('updated'));
-            redirect(site_url('user/payout_settings'), 'refresh');
-        }
+    //     if ($param1 == 'paypal_settings') {
+    //         $this->user_model->update_instructor_paypal_settings($this->session->userdata('user_id'));
+    //         $this->session->set_flashdata('flash_message', get_phrase('updated'));
+    //         redirect(site_url('user/payout_settings'), 'refresh');
+    //     }
+    //     if ($param1 == 'stripe_settings') {
+    //         $this->user_model->update_instructor_stripe_settings($this->session->userdata('user_id'));
+    //         $this->session->set_flashdata('flash_message', get_phrase('updated'));
+    //         redirect(site_url('user/payout_settings'), 'refresh');
+    //     }
 
-        if ($param1 == 'razorpay_settings') {
-            $this->user_model->update_instructor_razorpay_settings($this->session->userdata('user_id'));
-            $this->session->set_flashdata('flash_message', get_phrase('updated'));
-            redirect(site_url('user/payout_settings'), 'refresh');
-        }
+    //     if ($param1 == 'razorpay_settings') {
+    //         $this->user_model->update_instructor_razorpay_settings($this->session->userdata('user_id'));
+    //         $this->session->set_flashdata('flash_message', get_phrase('updated'));
+    //         redirect(site_url('user/payout_settings'), 'refresh');
+    //     }
 
-        $page_data['page_name'] = 'payment_settings';
-        $page_data['page_title'] = get_phrase('payout_settings');
-        $this->load->view('backend/index', $page_data);
-    }
+    //     // $page_data['page_name'] = 'payment_settings';
+    //     // $page_data['page_title'] = get_phrase('payout_settings');
+    //     $this->load->view('backend/index', $page_data);
+    // }
 
     public function sales_report($param1 = "")
     {
@@ -365,7 +375,7 @@ class User extends CI_Controller
             $page_data['timestamp_end']   = strtotime(date("m/t/Y 23:59:59"));
         }
 
-        $page_data['payment_history'] = $this->crud_model->get_instructor_revenue($this->session->userdata('user_id'), $page_data['timestamp_start'], $page_data['timestamp_end']);
+        // $page_data['payment_history'] = $this->crud_model->get_instructor_revenue($this->session->userdata('user_id'), $page_data['timestamp_start'], $page_data['timestamp_end']);
         $page_data['page_name'] = 'sales_report';
         $page_data['page_title'] = get_phrase('sales_report');
         $this->load->view('backend/index', $page_data);
@@ -499,16 +509,16 @@ class User extends CI_Controller
         redirect(site_url('home/profile/user_profile'), 'refresh');
     }
 
-    function invoice($payment_id = "")
-    {
-        if ($this->session->userdata('user_login') != true) {
-            redirect(site_url('login'), 'refresh');
-        }
-        $page_data['page_name'] = 'invoice';
-        $page_data['payment_details'] = $this->crud_model->get_payment_details_by_id($payment_id);
-        $page_data['page_title'] = get_phrase('invoice');
-        $this->load->view('backend/index', $page_data);
-    }
+    // function invoice($payment_id = "")
+    // {
+    //     if ($this->session->userdata('user_login') != true) {
+    //         redirect(site_url('login'), 'refresh');
+    //     }
+    //     $page_data['page_name'] = 'invoice';
+    //     $page_data['payment_details'] = $this->crud_model->get_payment_details_by_id($payment_id);
+    //     $page_data['page_title'] = get_phrase('invoice');
+    //     $this->load->view('backend/index', $page_data);
+    // }
 
 
     function become_an_instructor()
@@ -546,16 +556,16 @@ class User extends CI_Controller
         $page_data['page_title'] = get_phrase('payout_report');
 
         $page_data['payouts'] = $this->crud_model->get_payouts($this->session->userdata('user_id'), 'user');
-        $page_data['total_pending_amount'] = $this->crud_model->get_total_pending_amount($this->session->userdata('user_id'));
-        $page_data['total_payout_amount'] = $this->crud_model->get_total_payout_amount($this->session->userdata('user_id'));
+        // $page_data['total_pending_amount'] = $this->crud_model->get_total_pending_amount($this->session->userdata('user_id'));
+        // $page_data['total_payout_amount'] = $this->crud_model->get_total_payout_amount($this->session->userdata('user_id'));
         $page_data['requested_withdrawal_amount'] = $this->crud_model->get_requested_withdrawal_amount($this->session->userdata('user_id'));
 
         if(addon_status('ebook')){
             $this->db->select_sum('instructor_revenue');
             $this->db->where('ebook.user_id', $this->session->userdata('user_id'));
-            $this->db->where('ebook_payment.instructor_payment_status', 0);
-            $this->db->from('ebook_payment');
-            $this->db->join('ebook', 'ebook_payment.ebook_id = ebook.ebook_id'); 
+            // $this->db->where('ebook_payment.instructor_payment_status', 0);
+            // $this->db->from('ebook_payment');
+            // $this->db->join('ebook', 'ebook_payment.ebook_id = ebook.ebook_id'); 
             $ebook_total_pending_amount = $this->db->get()->row('instructor_revenue');
 
             $page_data['total_pending_amount'] = $page_data['total_pending_amount'] + $ebook_total_pending_amount;
@@ -579,7 +589,7 @@ class User extends CI_Controller
             $this->crud_model->delete_withdrawal_request();
         }
 
-        redirect(site_url('user/payout_report'), 'refresh');
+        // redirect(site_url('user/payout_report'), 'refresh');
     }
     // Ajax Portion
     public function ajax_get_video_details()

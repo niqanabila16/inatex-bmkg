@@ -9,7 +9,7 @@ if (!defined('BASEPATH'))
  *  http://codecanyon.net/user/Creativeitem
  *  http://support.creativeitem.com
  */
-class Mobile extends CI_Controller
+class Checker extends CI_Controller
 {
     function __construct()
     {
@@ -246,9 +246,9 @@ class Mobile extends CI_Controller
         $end_timestamp   = strtotime("30-" . $month . "-" . $year);
         $this->db->where("timestamp >=", $start_timestamp);
         $this->db->where("timestamp <=", $end_timestamp);
-        $this->db->where("payment_type", $type);
-        $response = $this->db->get('payment')->result_array();
-        echo json_encode($response);
+        // $this->db->where("payment_type", $type);
+        // $response = $this->db->get('payment')->result_array();
+        // echo json_encode($response);
     }
     // attendance data response
     // ** timestamp, year, class_id, section_id, student_id to get attendance from attendance table

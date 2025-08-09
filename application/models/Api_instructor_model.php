@@ -1275,90 +1275,90 @@ class Api_instructor_model extends CI_Model
 		return $response;
 	}
 
-	public function details_of_sales_report_get($payment_id = "")
-	{
-		$response = array();
+	// public function details_of_sales_report_get($payment_id = "")
+	// {
+	// 	$response = array();
 
-		$this->db->where('id', $payment_id);
-		$payment_details = $this->db->get('payment')->row_array();
+	// 	$this->db->where('id', $payment_id);
+	// 	$payment_details = $this->db->get('payment')->row_array();
 
-		$student_details = $this->db->get_where('users', array('id' => $payment_details['user_id']))->row_array();
+	// 	$student_details = $this->db->get_where('users', array('id' => $payment_details['user_id']))->row_array();
 
-		$response['payment_details'] = $payment_details;
-		$response['payment_date'] = date('d M Y', $payment_details['date_added']);
-		$response['course_title'] = $this->db->get_where('course', array('id' => $payment_details['course_id']))->row('title');
-		$response['enrolled_student'] = $student_details['first_name'] . ' ' . $student_details['last_name'];
-		$response['message'] = api_phrase('sales_reports');
-		$response['status'] = 200;
-		$response['validity'] = 1;
-		return $response;
-	}
+	// 	$response['payment_details'] = $payment_details;
+	// 	$response['payment_date'] = date('d M Y', $payment_details['date_added']);
+	// 	$response['course_title'] = $this->db->get_where('course', array('id' => $payment_details['course_id']))->row('title');
+	// 	$response['enrolled_student'] = $student_details['first_name'] . ' ' . $student_details['last_name'];
+	// 	$response['message'] = api_phrase('sales_reports');
+	// 	$response['status'] = 200;
+	// 	$response['validity'] = 1;
+	// 	return $response;
+	// }
 
-	public function payout_report_get($user_id = "")
-	{
-		$response = array();
+	// public function payout_report_get($user_id = "")
+	// {
+	// 	$response = array();
 
-		$response['payouts'] = $this->crud_model->get_payouts($user_id, 'user')->result_array();
-		$response['total_pending_amoun'] = $this->crud_model->get_total_pending_amount($user_id);
-		$response['total_payout_amount'] = $this->crud_model->get_total_payout_amount($user_id);
-		$response['requested_withdrawal_amount'] = strval($this->crud_model->get_requested_withdrawal_amount($user_id));
+	// 	$response['payouts'] = $this->crud_model->get_payouts($user_id, 'user')->result_array();
+	// 	$response['total_pending_amoun'] = $this->crud_model->get_total_pending_amount($user_id);
+	// 	$response['total_payout_amount'] = $this->crud_model->get_total_payout_amount($user_id);
+	// 	$response['requested_withdrawal_amount'] = strval($this->crud_model->get_requested_withdrawal_amount($user_id));
 
-		$response['message'] = api_phrase('payout_reports');
-		$response['status'] = 200;
-		$response['validity'] = 1;
-		return $response;
-	}
+	// 	$response['message'] = api_phrase('payout_reports');
+	// 	$response['status'] = 200;
+	// 	$response['validity'] = 1;
+	// 	return $response;
+	// }
 
-	public function add_withdrawal_request_post($user_id = "")
-	{
-		$response = array();
+	// public function add_withdrawal_request_post($user_id = "")
+	// {
+	// 	$response = array();
 
-		$total_pending_amount = $this->crud_model->get_total_pending_amount($user_id);
-		$requested_withdrawal_amount = $this->input->post('withdrawal_amount');
+	// 	$total_pending_amount = $this->crud_model->get_total_pending_amount($user_id);
+	// 	$requested_withdrawal_amount = $this->input->post('withdrawal_amount');
 
-		if ($total_pending_amount > 0 && $total_pending_amount >= $requested_withdrawal_amount) {
-			$data['amount']     = $requested_withdrawal_amount;
-			$data['user_id']    = $user_id;
-			$data['date_added'] = strtotime(date('D, d M Y'));
-			$data['status']     = 0;
-			$this->db->insert('payout', $data);
+	// 	if ($total_pending_amount > 0 && $total_pending_amount >= $requested_withdrawal_amount) {
+	// 		$data['amount']     = $requested_withdrawal_amount;
+	// 		$data['user_id']    = $user_id;
+	// 		$data['date_added'] = strtotime(date('D, d M Y'));
+	// 		$data['status']     = 0;
+	// 		$this->db->insert('payout', $data);
 
-			$response['message'] = api_phrase('withdrawal_requested');
-			$response['status'] = 200;
-			$response['validity'] = 1;
-		} else {
-			$response['message'] = api_phrase('invalid_withdrawal_amount');
-			$response['status'] = 403;
-			$response['validity'] = 0;
-		}
+	// 		$response['message'] = api_phrase('withdrawal_requested');
+	// 		$response['status'] = 200;
+	// 		$response['validity'] = 1;
+	// 	} else {
+	// 		$response['message'] = api_phrase('invalid_withdrawal_amount');
+	// 		$response['status'] = 403;
+	// 		$response['validity'] = 0;
+	// 	}
 
-		return $response;
-	}
+	// 	return $response;
+	// }
 
-	public function delete_withdrawal_request_get($user_id = "")
-	{
-		$response = array();
+	// public function delete_withdrawal_request_get($user_id = "")
+	// {
+	// 	$response = array();
 
-		$checker = array(
-			'user_id' => $user_id,
-			'status' => 0
-		);
-		$requested_withdrawal = $this->db->get_where('payout', $checker);
-		if ($requested_withdrawal->num_rows() > 0) {
-			$this->db->where($checker);
-			$this->db->delete('payout');
+	// 	$checker = array(
+	// 		'user_id' => $user_id,
+	// 		'status' => 0
+	// 	);
+	// 	$requested_withdrawal = $this->db->get_where('payout', $checker);
+	// 	if ($requested_withdrawal->num_rows() > 0) {
+	// 		$this->db->where($checker);
+	// 		$this->db->delete('payout');
 
-			$response['message'] = api_phrase('withdrawal_deleted');
-			$response['status'] = 200;
-			$response['validity'] = 1;
-		} else {
-			$response['message'] = api_phrase('withdrawal_not_found');
-			$response['status'] = 403;
-			$response['validity'] = 0;
-		}
+	// 		$response['message'] = api_phrase('withdrawal_deleted');
+	// 		$response['status'] = 200;
+	// 		$response['validity'] = 1;
+	// 	} else {
+	// 		$response['message'] = api_phrase('withdrawal_not_found');
+	// 		$response['status'] = 403;
+	// 		$response['validity'] = 0;
+	// 	}
 
-		return $response;
-	}
+	// 	return $response;
+	// }
 
 	function live_class_get($user_id = "", $course_id = ""){
 		$this->db->where('course_id', $course_id);

@@ -63,24 +63,24 @@ class User_model extends CI_Model
             $data['image'] = md5(rand(10000, 10000000));
 
             // Add paypal keys
-            $payment_keys = array();
+            // $payment_keys = array();
 
             $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
             $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
-            $payment_keys['paypal'] = $paypal;
+            // $payment_keys['paypal'] = $paypal;
 
             // Add Stripe keys
             $stripe['public_live_key'] = html_escape($this->input->post('stripe_public_key'));
             $stripe['secret_live_key'] = html_escape($this->input->post('stripe_secret_key'));
-            $payment_keys['stripe'] = $stripe;
+            // $payment_keys['stripe'] = $stripe;
 
             // Add razorpay keys
             $razorpay['key_id'] = html_escape($this->input->post('key_id'));
             $razorpay['secret_key'] = html_escape($this->input->post('secret_key'));
-            $payment_keys['razorpay'] = $razorpay;
+            // $payment_keys['razorpay'] = $razorpay;
 
             //All payment keys
-            $data['payment_keys'] = json_encode($payment_keys);
+            // $data['payment_keys'] = json_encode($payment_keys);
 
             if ($is_instructor) {
                 $data['is_instructor'] = 1;
@@ -124,24 +124,24 @@ class User_model extends CI_Model
             $data['image'] = md5(rand(10000, 10000000));
 
             // Add paypal keys
-            $payment_keys = array();
+            // $payment_keys = array();
 
             $paypal['production_client_id']  = '';
             $paypal['production_secret_key'] = '';
-            $payment_keys['paypal'] = $paypal;
+            // $payment_keys['paypal'] = $paypal;
 
             // Add Stripe keys
             $stripe['public_live_key'] = '';
             $stripe['secret_live_key'] = '';
-            $payment_keys['stripe'] = $stripe;
+            // $payment_keys['stripe'] = $stripe;
 
             // Add razorpay keys
             $razorpay['key_id'] = '';
             $razorpay['secret_key'] = '';
-            $payment_keys['razorpay'] = $razorpay;
+            // $payment_keys['razorpay'] = $razorpay;
 
             //All payment keys
-            $data['payment_keys'] = json_encode($payment_keys);
+            // $data['payment_keys'] = json_encode($payment_keys);
 
             if ($is_instructor) {
                 $data['is_instructor'] = 1;
@@ -207,24 +207,24 @@ class User_model extends CI_Model
             }
 
             // Update paypal keys
-            $payment_keys = array();
+            // $payment_keys = array();
 
             $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
             $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
-            $payment_keys['paypal'] = $paypal;
+            // $payment_keys['paypal'] = $paypal;
 
             // Update Stripe keys
             $stripe['public_live_key'] = html_escape($this->input->post('stripe_public_key'));
             $stripe['secret_live_key'] = html_escape($this->input->post('stripe_secret_key'));
-            $payment_keys['stripe'] = $stripe;
+            // $payment_keys['stripe'] = $stripe;
 
             // Update razorpay keys
             $razorpay['key_id'] = html_escape($this->input->post('key_id'));
             $razorpay['secret_key'] = html_escape($this->input->post('secret_key'));
-            $payment_keys['razorpay'] = $razorpay;
+            // $payment_keys['razorpay'] = $razorpay;
 
             //All payment keys
-            $data['payment_keys'] = json_encode($payment_keys);
+            // $data['payment_keys'] = json_encode($payment_keys);
 
             $this->db->where('id', $user_id);
             $this->db->update('users', $data);
@@ -389,14 +389,14 @@ class User_model extends CI_Model
     public function update_instructor_paypal_settings($user_id = '')
     {
         $user_details = $this->get_all_user($user_id)->row_array();
-        $payment_keys = json_decode($user_details['payment_keys'], true);
+        // $payment_keys = json_decode($user_details['payment_keys'], true);
         // Update paypal keys
         $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
         $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
-        $payment_keys['paypal'] = $paypal;
+        // $payment_keys['paypal'] = $paypal;
 
         //All payment keys
-        $data['payment_keys'] = json_encode($payment_keys);
+        // $data['payment_keys'] = json_encode($payment_keys);
 
         $this->db->where('id', $user_id);
         $this->db->update('users', $data);
@@ -404,33 +404,33 @@ class User_model extends CI_Model
     public function update_instructor_stripe_settings($user_id = '')
     {
         $user_details = $this->get_all_user($user_id)->row_array();
-        $payment_keys = json_decode($user_details['payment_keys'], true);
+        // $payment_keys = json_decode($user_details['payment_keys'], true);
         // Update stripe keys
         $stripe['public_live_key'] = html_escape($this->input->post('stripe_public_key'));
         $stripe['secret_live_key'] = html_escape($this->input->post('stripe_secret_key'));
-        $payment_keys['stripe'] = $stripe;
+        // $payment_keys['stripe'] = $stripe;
 
         //All payment keys
-        $data['payment_keys'] = json_encode($payment_keys);
+        // $data['payment_keys'] = json_encode($payment_keys);
 
         $this->db->where('id', $user_id);
         $this->db->update('users', $data);
     }
 
-    public function update_instructor_razorpay_settings($user_id = ''){
-        $user_details = $this->get_all_user($user_id)->row_array();
-        $payment_keys = json_decode($user_details['payment_keys'], true);
-        // Update razorpay keys
-        $razorpay['key_id'] = html_escape($this->input->post('key_id'));
-        $razorpay['secret_key'] = html_escape($this->input->post('secret_key'));
-        $payment_keys['razorpay'] = $razorpay;
+    // public function update_instructor_razorpay_settings($user_id = ''){
+    //     $user_details = $this->get_all_user($user_id)->row_array();
+    //     $payment_keys = json_decode($user_details['payment_keys'], true);
+    //     // Update razorpay keys
+    //     $razorpay['key_id'] = html_escape($this->input->post('key_id'));
+    //     $razorpay['secret_key'] = html_escape($this->input->post('secret_key'));
+    //     $payment_keys['razorpay'] = $razorpay;
 
-        //All payment keys
-        $data['payment_keys'] = json_encode($payment_keys);
+    //     //All payment keys
+    //     $data['payment_keys'] = json_encode($payment_keys);
 
-        $this->db->where('id', $user_id);
-        $this->db->update('users', $data);
-    }
+    //     $this->db->where('id', $user_id);
+    //     $this->db->update('users', $data);
+    // }
 
     // POST INSTRUCTOR APPLICATION FORM AND INSERT INTO DATABASE IF EVERYTHING IS OKAY
     public function post_instructor_application()
