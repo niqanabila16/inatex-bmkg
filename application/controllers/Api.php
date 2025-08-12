@@ -3,6 +3,18 @@ require APPPATH . '/libraries/TokenHandler.php';
 //include Rest Controller library
 require APPPATH . 'libraries/REST_Controller.php';
 
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ * @property CI_DB_query_builder    $db
+ * @property Crud_model             $crud_model
+ * @property User_model             $user_model
+ * @property CI_Input               $input
+ * @property Api_model              $api_model
+ * @property TokenHandler           $tokenHandler
+ */
+
 class Api extends REST_Controller {
 
   protected $token;
