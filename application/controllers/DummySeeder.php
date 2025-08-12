@@ -7,7 +7,7 @@
 //     public function __construct()
 //     {
 //         parent::__construct();
-//         $this->load->database(); // ✅ Ini yang penting
+//         $this->load->database(); 
 //     }
 
 //     public function index()

@@ -3545,7 +3545,6 @@ class Crud_model extends CI_Model
         }
     }
 
-
     // // For single device login
     // public function store_session_in_user($id = "")
     // {

@@ -56,15 +56,15 @@ class Home extends CI_Controller
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    public function shopping_cart()
-    {
-        if (!$this->session->userdata('cart_items')) {
-            $this->session->set_userdata('cart_items', array());
-        }
-        $page_data['page_name'] = "shopping_cart";
-        $page_data['page_title'] = site_phrase('shopping_cart');
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
-    }
+    // public function shopping_cart()
+    // {
+    //     if (!$this->session->userdata('cart_items')) {
+    //         $this->session->set_userdata('cart_items', array());
+    //     }
+    //     $page_data['page_name'] = "shopping_cart";
+    //     $page_data['page_title'] = site_phrase('shopping_cart');
+    //     $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+    // }
 
     public function courses()
     {
@@ -211,28 +211,28 @@ class Home extends CI_Controller
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    public function purchase_history()
-    {
-        if ($this->session->userdata('user_login') != true) {
-            redirect(site_url('home'), 'refresh');
-        }
+    // public function purchase_history()
+    // {
+    //     if ($this->session->userdata('user_login') != true) {
+    //         redirect(site_url('home'), 'refresh');
+    //     }
 
-        $total_rows = $this->crud_model->purchase_history($this->session->userdata('user_id'))->num_rows();
-        $config = array();
-        $config = pagintaion($total_rows, 10);
-        $config['base_url']  = site_url('home/purchase_history');
-        $this->pagination->initialize($config);
-        $page_data['per_page']   = $config['per_page'];
+    //     $total_rows = $this->crud_model->purchase_history($this->session->userdata('user_id'))->num_rows();
+    //     $config = array();
+    //     $config = pagintaion($total_rows, 10);
+    //     $config['base_url']  = site_url('home/purchase_history');
+    //     $this->pagination->initialize($config);
+    //     $page_data['per_page']   = $config['per_page'];
 
-        // if (addon_status('offline_payment') == 1) :
-        //     $this->load->model('addons/offline_payment_model');
-        //     $page_data['pending_offline_payment_history'] = $this->offline_payment_model->pending_offline_payment($this->session->userdata('user_id'))->result_array();
-        // endif;
+    //     // if (addon_status('offline_payment') == 1) :
+    //     //     $this->load->model('addons/offline_payment_model');
+    //     //     $page_data['pending_offline_payment_history'] = $this->offline_payment_model->pending_offline_payment($this->session->userdata('user_id'))->result_array();
+    //     // endif;
 
-        $page_data['page_name']  = "purchase_history";
-        $page_data['page_title'] = site_phrase('purchase_history');
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
-    }
+    //     $page_data['page_name']  = "purchase_history";
+    //     $page_data['page_title'] = site_phrase('purchase_history');
+    //     $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+    // }
 
     public function profile($param1 = "")
     {
@@ -492,59 +492,59 @@ class Home extends CI_Controller
     }
 
     // PAYPAL CHECKOUT ACTIONS
-    public function razorpay_payment($payment_request_mobile = "")
-    {
+    // public function razorpay_payment($payment_request_mobile = "")
+    // {
 
-        $response = array();
-        if (isset($_GET['user_id']) && !empty($_GET['user_id']) && isset($_GET['amount']) && !empty($_GET['amount'])) {
+    //     $response = array();
+    //     if (isset($_GET['user_id']) && !empty($_GET['user_id']) && isset($_GET['amount']) && !empty($_GET['amount'])) {
 
-            $user_id            = $_GET['user_id'];
-            $amount             = $_GET['amount'];
-            $razorpay_order_id      = $_GET['razorpay_order_id'];
-            $payment_id         = $_GET['payment_id'];
-            $signature        = $_GET['signature'];
+    //         $user_id            = $_GET['user_id'];
+    //         $amount             = $_GET['amount'];
+    //         $razorpay_order_id      = $_GET['razorpay_order_id'];
+    //         $payment_id         = $_GET['payment_id'];
+    //         $signature        = $_GET['signature'];
 
-            //THIS IS HOW I CHECKED THE PAYPAL PAYMENT STATUS
-            $status = $this->payment_model->razorpay_payment($razorpay_order_id, $payment_id, $amount, $signature);
+    //         //THIS IS HOW I CHECKED THE PAYPAL PAYMENT STATUS
+    //         $status = $this->payment_model->razorpay_payment($razorpay_order_id, $payment_id, $amount, $signature);
 
-            if ($status == 1) {
-                $payment_key['payment_id'] = $payment_id;
-                $payment_key['razorpay_order_id'] = $razorpay_order_id;
-                $payment_key['signature'] = $signature;
-                $payment_key = json_encode($payment_key);
+    //         if ($status == 1) {
+    //             $payment_key['payment_id'] = $payment_id;
+    //             $payment_key['razorpay_order_id'] = $razorpay_order_id;
+    //             $payment_key['signature'] = $signature;
+    //             $payment_key = json_encode($payment_key);
 
-                $this->crud_model->enrol_student($user_id);
-                $this->crud_model->course_purchase($user_id, 'razorpay', $amount, $payment_key);
-                $this->email_model->course_purchase_notification($user_id, 'razorpay', $amount);
-                $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
-                if ($payment_request_mobile == 'true') :
-                    $course_id = $this->session->userdata('cart_items');
-                    redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/paid', 'refresh');
-                else :
-                    $this->session->set_userdata('cart_items', array());
-                    redirect('home/my_courses', 'refresh');
-                endif;
-            }else{
-                if ($payment_request_mobile == 'true') :
-                    $course_id = $this->session->userdata('cart_items');
-                    $this->session->set_flashdata('flash_message', $response['status_msg']);
-                    redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/error', 'refresh');
-                else :
-                    $this->session->set_flashdata('error_message', site_phrase('payment_failed').'! '.site_phrase('something_is_wrong'));
-                    redirect('home/shopping_cart', 'refresh');
-                endif;
-            }
-        }else{
-            if ($payment_request_mobile == 'true') :
-                $course_id = $this->session->userdata('cart_items');
-                $this->session->set_flashdata('flash_message', $response['status_msg']);
-                redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/error', 'refresh');
-            else :
-                $this->session->set_flashdata('error_message', site_phrase('payment_failed').'! '.site_phrase('something_is_wrong'));
-                redirect('home/shopping_cart', 'refresh');
-            endif;
-        }
-    }
+    //             $this->crud_model->enrol_student($user_id);
+    //             $this->crud_model->course_purchase($user_id, 'razorpay', $amount, $payment_key);
+    //             $this->email_model->course_purchase_notification($user_id, 'razorpay', $amount);
+    //             $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
+    //             if ($payment_request_mobile == 'true') :
+    //                 $course_id = $this->session->userdata('cart_items');
+    //                 redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/paid', 'refresh');
+    //             else :
+    //                 $this->session->set_userdata('cart_items', array());
+    //                 redirect('home/my_courses', 'refresh');
+    //             endif;
+    //         }else{
+    //             if ($payment_request_mobile == 'true') :
+    //                 $course_id = $this->session->userdata('cart_items');
+    //                 $this->session->set_flashdata('flash_message', $response['status_msg']);
+    //                 redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/error', 'refresh');
+    //             else :
+    //                 $this->session->set_flashdata('error_message', site_phrase('payment_failed').'! '.site_phrase('something_is_wrong'));
+    //                 redirect('home/shopping_cart', 'refresh');
+    //             endif;
+    //         }
+    //     }else{
+    //         if ($payment_request_mobile == 'true') :
+    //             $course_id = $this->session->userdata('cart_items');
+    //             $this->session->set_flashdata('flash_message', $response['status_msg']);
+    //             redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/error', 'refresh');
+    //         else :
+    //             $this->session->set_flashdata('error_message', site_phrase('payment_failed').'! '.site_phrase('something_is_wrong'));
+    //             redirect('home/shopping_cart', 'refresh');
+    //         endif;
+    //     }
+    // }
 
 
     public function lesson($slug = "", $course_id = "", $lesson_id = "")
@@ -1015,20 +1015,20 @@ class Home extends CI_Controller
         }
     }
 
-    public function invoice($purchase_history_id = '')
-    {
-        if ($this->session->userdata('user_login') != 1) {
-            redirect('home', 'refresh');
-        }
-        $purchase_history = $this->crud_model->get_payment_details_by_id($purchase_history_id);
-        if ($purchase_history['user_id'] != $this->session->userdata('user_id')) {
-            redirect('home', 'refresh');
-        }
-        $page_data['payment_info'] = $purchase_history;
-        $page_data['page_name'] = 'invoice';
-        $page_data['page_title'] = 'invoice';
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
-    }
+    // public function invoice($purchase_history_id = '')
+    // {
+    //     if ($this->session->userdata('user_login') != 1) {
+    //         redirect('home', 'refresh');
+    //     }
+    //     $purchase_history = $this->crud_model->get_payment_details_by_id($purchase_history_id);
+    //     if ($purchase_history['user_id'] != $this->session->userdata('user_id')) {
+    //         redirect('home', 'refresh');
+    //     }
+    //     $page_data['payment_info'] = $purchase_history;
+    //     $page_data['page_name'] = 'invoice';
+    //     $page_data['page_title'] = 'invoice';
+    //     $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+    // }
 
     /** COURSE COMPARE STARTS */
     public function compare()
@@ -1093,44 +1093,44 @@ class Home extends CI_Controller
 
 
     //FOR MOBILE
-    public function course_purchase($auth_token = '', $course_id  = '')
-    {
-        $this->load->model('jwt_model');
-        if (empty($auth_token) || $auth_token == "null") {
-            $page_data['cart_item'] = $course_id;
-            $page_data['user_id'] = '';
-            $page_data['is_login_now'] = 0;
-            $page_data['enroll_type'] = null;
-            $page_data['page_name'] = 'shopping_cart';
-            $this->load->view('mobile/index', $page_data);
-        } else {
+    // public function course_purchase($auth_token = '', $course_id  = '')
+    // {
+    //     $this->load->model('jwt_model');
+    //     if (empty($auth_token) || $auth_token == "null") {
+    //         $page_data['cart_item'] = $course_id;
+    //         $page_data['user_id'] = '';
+    //         $page_data['is_login_now'] = 0;
+    //         $page_data['enroll_type'] = null;
+    //         $page_data['page_name'] = 'shopping_cart';
+    //         $this->load->view('mobile/index', $page_data);
+    //     } else {
 
-            $logged_in_user_details = json_decode($this->jwt_model->token_data_get($auth_token), true);
+    //         $logged_in_user_details = json_decode($this->jwt_model->token_data_get($auth_token), true);
 
-            if ($logged_in_user_details['user_id'] > 0) {
+    //         if ($logged_in_user_details['user_id'] > 0) {
 
-                $credential = array('id' => $logged_in_user_details['user_id'], 'status' => 1, 'role_id' => 2);
-                $query = $this->db->get_where('users', $credential);
-                if ($query->num_rows() > 0) {
-                    $row = $query->row();
-                    $page_data['cart_item'] = $course_id;
-                    $page_data['user_id'] = $row->id;
-                    $page_data['is_login_now'] = 1;
-                    $page_data['enroll_type'] = null;
-                    $page_data['page_name'] = 'shopping_cart';
+    //             $credential = array('id' => $logged_in_user_details['user_id'], 'status' => 1, 'role_id' => 2);
+    //             $query = $this->db->get_where('users', $credential);
+    //             if ($query->num_rows() > 0) {
+    //                 $row = $query->row();
+    //                 $page_data['cart_item'] = $course_id;
+    //                 $page_data['user_id'] = $row->id;
+    //                 $page_data['is_login_now'] = 1;
+    //                 $page_data['enroll_type'] = null;
+    //                 $page_data['page_name'] = 'shopping_cart';
 
-                    $cart_item = array($course_id);
-                    $this->session->set_userdata('cart_items', $cart_item);
-                    $this->session->set_userdata('user_login', '1');
-                    $this->session->set_userdata('user_id', $row->id);
-                    $this->session->set_userdata('role_id', $row->role_id);
-                    $this->session->set_userdata('role', get_user_role('user_role', $row->id));
-                    $this->session->set_userdata('name', $row->first_name . ' ' . $row->last_name);
-                    $this->load->view('mobile/index', $page_data);
-                }
-            }
-        }
-    }
+    //                 $cart_item = array($course_id);
+    //                 $this->session->set_userdata('cart_items', $cart_item);
+    //                 $this->session->set_userdata('user_login', '1');
+    //                 $this->session->set_userdata('user_id', $row->id);
+    //                 $this->session->set_userdata('role_id', $row->role_id);
+    //                 $this->session->set_userdata('role', get_user_role('user_role', $row->id));
+    //                 $this->session->set_userdata('name', $row->first_name . ' ' . $row->last_name);
+    //                 $this->load->view('mobile/index', $page_data);
+    //             }
+    //         }
+    //     }
+    // }
 
     //FOR MOBILE
     public function get_enrolled_to_free_course_mobile($course_id = "", $user_id = "", $get_request = "")

@@ -9,7 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property User_model             $user_model
  * @property CI_Input               $input
  * @property LazyLoader             $lazy_loader
-
+ * @property CI_Router              $router
  */
 class User extends CI_Controller
 {
@@ -273,17 +273,17 @@ class User extends CI_Controller
             $this->is_the_course_belongs_to_current_instructor($param2);
             $this->crud_model->update_course($param2);
 
-            // CHECK IF LIVE CLASS ADDON EXISTS, ADD OR UPDATE IT TO ADDON MODEL
-            if (addon_status('live-class')) {
-                $this->load->model('addons/Liveclass_model', 'liveclass_model');
-                $this->liveclass_model->update_live_class($param2);
-            }
+            // // CHECK IF LIVE CLASS ADDON EXISTS, ADD OR UPDATE IT TO ADDON MODEL
+            // if (addon_status('live-class')) {
+            //     $this->load->model('addons/Liveclass_model', 'liveclass_model');
+            //     $this->liveclass_model->update_live_class($param2);
+            // }
 
-            // CHECK IF JITSI LIVE CLASS ADDON EXISTS, ADD OR UPDATE IT TO ADDON MODEL
-            if (addon_status('jitsi-live-class')) {
-                $this->load->model('addons/jitsi_liveclass_model', 'jitsi_liveclass_model');
-                $this->jitsi_liveclass_model->update_live_class($param2);
-            }
+            // // CHECK IF JITSI LIVE CLASS ADDON EXISTS, ADD OR UPDATE IT TO ADDON MODEL
+            // if (addon_status('jitsi-live-class')) {
+            //     $this->load->model('addons/jitsi_liveclass_model', 'jitsi_liveclass_model');
+            //     $this->jitsi_liveclass_model->update_live_class($param2);
+            // }
 
             redirect(site_url('user/course_form/course_edit/' . $param2));
         } elseif ($param1 == 'add_shortcut') {
@@ -575,22 +575,22 @@ class User extends CI_Controller
     }
 
     // HANDLED WITHDRAWAL REQUESTS
-    public function withdrawal($action = "")
-    {
-        if ($this->session->userdata('user_login') != true) {
-            redirect(site_url('login'), 'refresh');
-        }
+    // public function withdrawal($action = "")
+    // {
+    //     if ($this->session->userdata('user_login') != true) {
+    //         redirect(site_url('login'), 'refresh');
+    //     }
 
-        if ($action == 'request') {
-            $this->crud_model->add_withdrawal_request();
-        }
+    //     if ($action == 'request') {
+    //         $this->crud_model->add_withdrawal_request();
+    //     }
 
-        if ($action == 'delete') {
-            $this->crud_model->delete_withdrawal_request();
-        }
+    //     if ($action == 'delete') {
+    //         $this->crud_model->delete_withdrawal_request();
+    //     }
 
-        // redirect(site_url('user/payout_report'), 'refresh');
-    }
+    //     // redirect(site_url('user/payout_report'), 'refresh');
+    // }
     // Ajax Portion
     public function ajax_get_video_details()
     {

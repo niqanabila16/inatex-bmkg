@@ -6,6 +6,13 @@
  *  http://codecanyon.net/user/Creativeitem
  *  http://support.creativeitem.com
  */
+
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ */
+
 class Modal extends CI_Controller {
 
 

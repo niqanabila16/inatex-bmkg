@@ -1,6 +1,17 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ * @property CI_DB_query_builder    $db
+ * @property Crud_model             $crud_model
+ * @property Email_model            $email_model
+ * @property Social_login_modal     $social_login_modal
+ * @property User_model             $user_model
+ * @property CI_Input               $input
+ * 
+ */
 class Login extends CI_Controller
 {
 
@@ -67,9 +78,9 @@ class Login extends CI_Controller
         }
     }
     
-    public function fb_validate_login($access_token = "", $fb_user_id = "") {
-        $this->social_login_modal->fb_validate_login($access_token, $fb_user_id);
-    }
+    // public function fb_validate_login($access_token = "", $fb_user_id = "") {
+    //     $this->social_login_modal->fb_validate_login($access_token, $fb_user_id);
+    // }
 
 
 

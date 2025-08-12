@@ -9,7 +9,22 @@ if (!defined('BASEPATH'))
  *  http://codecanyon.net/user/Creativeitem
  *  http://support.creativeitem.com
  */
-class Checker extends CI_Controller
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ * @property CI_DB_query_builder    $db
+ * @property Crud_model             $crud_model
+ * @property User_model             $user_model
+ * @property CI_Input               $input
+ * @property LazyLoader             $lazy_loader
+ * @property CI_Router              $router
+ * @property Video_model            $video_model
+*  @property Scorm_model            $scorm_model
+*  @property Email_model            $email_model
+ */
+
+class Mobile extends CI_Controller
 {
     function __construct()
     {

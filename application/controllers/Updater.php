@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+/**
+ * @property CI_Loader              $load
+ * @property CI_Output              $output
+ * @property CI_Session             $session
+ */
 
 /*
  *  @author   : Creativeitem
