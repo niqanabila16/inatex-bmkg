@@ -386,36 +386,36 @@ class User_model extends CI_Model
         return $query_result;
     }
 
-    public function update_instructor_paypal_settings($user_id = '')
-    {
-        $user_details = $this->get_all_user($user_id)->row_array();
-        // $payment_keys = json_decode($user_details['payment_keys'], true);
-        // Update paypal keys
-        $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
-        $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
-        // $payment_keys['paypal'] = $paypal;
+    // public function update_instructor_paypal_settings($user_id = '')
+    // {
+    //     $user_details = $this->get_all_user($user_id)->row_array();
+    //     // $payment_keys = json_decode($user_details['payment_keys'], true);
+    //     // Update paypal keys
+    //     $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
+    //     $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
+    //     // $payment_keys['paypal'] = $paypal;
 
-        //All payment keys
-        // $data['payment_keys'] = json_encode($payment_keys);
+    //     //All payment keys
+    //     // $data['payment_keys'] = json_encode($payment_keys);
 
-        $this->db->where('id', $user_id);
-        $this->db->update('users', $data);
-    }
-    public function update_instructor_stripe_settings($user_id = '')
-    {
-        $user_details = $this->get_all_user($user_id)->row_array();
-        // $payment_keys = json_decode($user_details['payment_keys'], true);
-        // Update stripe keys
-        $stripe['public_live_key'] = html_escape($this->input->post('stripe_public_key'));
-        $stripe['secret_live_key'] = html_escape($this->input->post('stripe_secret_key'));
-        // $payment_keys['stripe'] = $stripe;
+    //     $this->db->where('id', $user_id);
+    //     $this->db->update('users', $data);
+    // }
+    // public function update_instructor_stripe_settings($user_id = '')
+    // {
+    //     $user_details = $this->get_all_user($user_id)->row_array();
+    //     // $payment_keys = json_decode($user_details['payment_keys'], true);
+    //     // Update stripe keys
+    //     $stripe['public_live_key'] = html_escape($this->input->post('stripe_public_key'));
+    //     $stripe['secret_live_key'] = html_escape($this->input->post('stripe_secret_key'));
+    //     // $payment_keys['stripe'] = $stripe;
 
-        //All payment keys
-        // $data['payment_keys'] = json_encode($payment_keys);
+    //     //All payment keys
+    //     // $data['payment_keys'] = json_encode($payment_keys);
 
-        $this->db->where('id', $user_id);
-        $this->db->update('users', $data);
-    }
+    //     $this->db->where('id', $user_id);
+    //     $this->db->update('users', $data);
+    // }
 
     // public function update_instructor_razorpay_settings($user_id = ''){
     //     $user_details = $this->get_all_user($user_id)->row_array();

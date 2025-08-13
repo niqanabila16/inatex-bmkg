@@ -1,4 +1,4 @@
-<section class="category-header-area" style="background-image: url('<?php echo base_url('uploads/system/shopping_cart.png'); ?>');
+<!-- <section class="category-header-area" style="background-image: url('<?php echo base_url('uploads/system/shopping_cart.png'); ?>');
     background-size: contain;
     background-repeat: no-repeat;
     background-position-x: right;
@@ -154,4 +154,4 @@
             }
         });
     }
-</script>
+</script> -->
