@@ -529,20 +529,44 @@ class Home extends CI_Controller
         }
     }
 
-
     public function lesson($slug = "", $course_id = "", $lesson_id = "")
     {
-        $user_id = $this->session->userdata('user_id');
-        $course_instructor_ids = array();
-        if ($this->session->userdata('user_login') != 1) {
-            if ($this->session->userdata('admin_login') != 1) {
-                redirect('home', 'refresh');
-            }
+        // 1. Cek apakah pengguna sudah login.
+        if ($this->session->userdata('user_login') != 1 && $this->session->userdata('admin_login') != 1) {
+            redirect('home', 'refresh');
         }
 
+        // 2. Ambil data kursus berdasarkan ID sebagai sumber kebenaran.
         $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
+
+        // 3. Pengecekan: Jika kursus dengan ID tersebut tidak ada, tampilkan halaman error 404.
+        if (empty($course_details)) {
+            show_404();
+        }
+
+        // 4. Validasi URL: Buat slug yang benar dari judul, lalu bandingkan.
+        $correct_slug = slugify($course_details['title']);
+        if ($slug != $correct_slug) {
+            // Jika tidak cocok, redirect ke URL yang benar. Ini bagus untuk SEO.
+            redirect(site_url('home/lesson/' . $correct_slug . '/' . $course_id), 'location', 301);
+        }
+
+        // Dijalankan setelah semua data valid.
+        $user_id = $this->session->userdata('user_id');
         $course_instructor_ids = explode(',', $course_details['user_id']);
-        //this function saved current lesson id and return previous lesson id if $lesson_id param is empty
+
+        // Cek apakah pengguna adalah admin, instruktur, atau sudah terdaftar (is_purchased sekarang berarti is_enrolled)
+        $is_admin = $this->session->userdata('role_id') == 1;
+        $is_instructor = in_array($user_id, $course_instructor_ids);
+        $is_enrolled = is_purchased($course_id); // Asumsi is_purchased() sekarang mengecek tabel 'enrol'
+
+        if (!$is_admin && !$is_instructor && !$is_enrolled) {
+            // Jika tidak memenuhi salah satu syarat di atas, kembalikan ke halaman detail kursus.
+            redirect(site_url('home/course/' . $correct_slug . '/' . $course_id), 'refresh');
+        }
+        
+        // Tidak ubah bagian ini dari default
+        // Logika untuk melanjutkan pelajaran terakhir atau memulai dari awal.
         $lesson_id = $this->crud_model->update_last_played_lesson($course_id, $lesson_id);
 
         if ($course_details['course_type'] == 'general') {
@@ -571,27 +595,8 @@ class Home extends CI_Controller
             $scorm_course_data = $this->scorm_model->get_scorm_curriculum_by_course_id($course_id);
             $page_data['scorm_curriculum'] = $scorm_course_data->row_array();
         }
-
-        // Check if the lesson contained course is purchased by the user
-        if (isset($page_data['lesson_id']) && $page_data['lesson_id'] > 0 && $course_details['course_type'] == 'general') {
-            if ($this->session->userdata('role_id') != 1 && !in_array($user_id, $course_instructor_ids)) {
-                if (!is_purchased($course_id)) {
-                    redirect(site_url('home/course/' . slugify($course_details['title']) . '/' . $course_details['id']), 'refresh');
-                }
-            }
-        } else if ($course_details['course_type'] == 'scorm' && $scorm_course_data->num_rows() > 0) {
-            if ($this->session->userdata('role_id') != 1 && !in_array($user_id, $course_instructor_ids)) {
-                if (!is_purchased($course_id)) {
-                    redirect(site_url('home/course/' . slugify($course_details['title']) . '/' . $course_details['id']), 'refresh');
-                }
-            }
-        } else {
-            if (!is_purchased($course_id)) {
-                redirect(site_url('home/course/' . slugify($course_details['title']) . '/' . $course_details['id']), 'refresh');
-            }
-        }
-
-
+        
+        // Mengumpulkan semua data untuk dikirim ke view.
         $page_data['course_details']  = $course_details;
         $page_data['drip_content_settings']  = json_decode(get_settings('drip_content_settings'), true);
         $page_data['watch_history']  = $this->crud_model->get_watch_histories($user_id, $course_id)->row_array();

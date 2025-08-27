@@ -161,9 +161,9 @@ class User extends CI_Controller
                     $price_badge = "badge-success-lighten";
                     $price = get_phrase('free');
                 }
-
+                //path to detail page of the course on frontend
                 $view_course_on_frontend_url = site_url('home/course/' . rawurlencode(slugify($row->title)) . '/' . $row->id);
-                $go_to_course_playing_page = site_url('home/lesson/' . rawurlencode(slugify($row->title)) . '/' . $row->id);
+                $go_to_course_playing_page = site_url('home/lesson/' . rawurlencode(slugify($row->title)) . '/' . $row->id);  
                 $edit_this_course_url = site_url('user/course_form/course_edit/' . $row->id);
                 $section_and_lesson_url = site_url('user/course_form/course_edit/' . $row->id);
 
@@ -381,7 +381,7 @@ class User extends CI_Controller
             $courses = $this->crud_model->get_course_by_id($course_id);
             if ($courses->num_rows() > 0) {
                 $course_details = $courses->row_array();
-                redirect(site_url('home/lesson/' . rawurlencode(slugify($course_details['title'])) . '/' . $course_details['id']), 'refresh');
+                redirect(site_url('home/lesson/' . rawurlencode(slugify($course_details['title'])) . '/' . $course_details['course_id']), 'refresh');
             }
         }
         redirect(site_url('user/courses'), 'refresh');

@@ -81,27 +81,22 @@ class Video_model extends CI_Model {
 				'embed_video'       => "https://player.vimeo.com/video/" . $video_id,
 				'duration'			=>	gmdate("H:i:s", $hash->duration)
 			);
-		}elseif ('youtube' || 'youtu') {
-			$video_id = $this->get_youtube_video_id($url);
-			$hash = json_decode(file_get_contents("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=".$video_id."&key=".$youtube_api_key.""));
+			} elseif (strpos($host, 'youtube') !== false || strpos($host, 'youtu.be') !== false) {
+				$video_id = $this->get_youtube_video_id($url);
+				if (!$video_id) return null;
 
-			if (!$hash) {
-				return;
+				return array(
+					'provider'          => 'YouTube',
+					'video_id'          => $video_id,
+					'title'             => '', // kosong karena tidak pakai API
+					'description'       => '',
+					'description_nl2br' => '',
+					'thumbnail'         => "https://img.youtube.com/vi/{$video_id}/hqdefault.jpg",
+					'video'             => "https://www.youtube.com/watch?v=" . $video_id,
+					'embed_video'       => "https://www.youtube.com/embed/" . $video_id,
+					'duration'          => ''
+				);
 			}
-			//header("Content-Type: text/plain");
 
-			$duration = new DateInterval($hash->items[0]->contentDetails->duration);
-			return array(
-				'provider'          => 'YouTube',
-				'video_id'			=> $video_id,
-				'title'             => $hash->items[0]->snippet->title,
-				'description'       => str_replace(array("", "<br/>", "<br />"), NULL, $hash->items[0]->snippet->description),
-				'description_nl2br' => str_replace(array("\n", "\r", "\r\n", "\n\r"), NULL, nl2br($hash->items[0]->snippet->description)),
-				'thumbnail'         => 'https://i.ytimg.com/vi/'.$hash->items[0]->id.'/default.jpg',
-				'video'             => "http://www.youtube.com/watch?v=" . $hash->items[0]->id,
-				'embed_video'       => "http://www.youtube.com/embed/" . $hash->items[0]->id,
-				'duration'       	=> $duration->format('%H:%I:%S'),
-			);
-		}
 	}
 }

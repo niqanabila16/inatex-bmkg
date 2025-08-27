@@ -1,4 +1,4 @@
-<div class="col-lg-9 order-1 course_col" id = "video_player_area">
+<div class="col-lg-7 order-1 course_col" id = "video_player_area">
     <!-- <div class="" style="background-color: #333;"> -->
     <?php if($show_locked_message && $course_details['enable_drip_content']): ?>
         <div class="py-5">
@@ -12,7 +12,15 @@
             // i am checking the null and empty values because of the existing users does not have video in all video lesson as type
             if($lesson_details['lesson_type'] == 'video' || $lesson_details['lesson_type'] == '' || $lesson_details['lesson_type'] == NULL):
                 $video_url = $lesson_details['video_url'];
-                $provider = $lesson_details['video_type'];
+                $provider = strtolower($lesson_details['video_type']);
+
+                if ($provider == 'youtube') {
+                    // convert watch?v= to embed/
+                    if (strpos($video_url, 'watch?v=') !== false) {
+                        $video_id = explode("watch?v=", $video_url)[1];
+                        $video_url = "https://www.youtube.com/embed/" . $video_id;
+                    }
+                }
                 ?>
 
                 <!-- If the video is youtube video -->
@@ -23,8 +31,37 @@
                     <div class="plyr__video-embed" id="player">
                         <iframe height="500" src="<?php echo $video_url;?>?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
                     </div>
+                    <style>
+                        .plyr__video-embed {
+                            height: 500px !important; /* Timpa 'height: 0' dan paksa tingginya */
+                            /* width: 1200px !important;  */
+                            padding-bottom: 0 !important; /* Nonaktifkan trik rasio aspek */
+                        }
 
-                    <script src="<?php echo base_url();?>assets/global/plyr/plyr.js"></script>
+                        .plyr__video-embed iframe {
+                            height: 100%;
+                            width: 100%;
+                        }
+
+                            .plyr--fullscreen-enabled {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            height: 100% !important;
+                            width: 100% !important;
+                            background: #000;
+                            z-index: 10000;
+                        }
+                            .plyr--fullscreen-enabled .plyr__video-wrapper,
+                            .plyr--fullscreen-enabled .plyr__video-embed {
+                                height: 100% !important;
+                                width: 100% !important;
+                                padding-bottom: 0 !important;
+                            }
+                    </style>
+                    <!-- <script src="<?php echo base_url();?>assets/global/plyr/plyr.js"></script> -->
                     <script>const player = new Plyr('#player');</script>
                     <!------------- PLYR.IO ------------>
 

@@ -449,15 +449,22 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
 
       <div class="col-lg-4 order-first order-lg-last">
         <div class="course-sidebar natural">
-          <?php if ($course_details['video_url'] != "") : ?>
-            <div class="preview-video-box">
-              <a data-bs-toggle="modal" data-bs-target="#CoursePreviewModal">
+        <?php if ($course_details['video_url'] != "") : 
+            $video_details = $this->video_model->getVideoDetails($course_details['video_url']);
+        ?>
+          <div class="preview-video-box">
+            <a data-bs-toggle="modal" data-bs-target="#CoursePreviewModal">
+              <?php if ($video_details && !empty($video_details['thumbnail'])): ?>
+                <img src="<?php echo $video_details['thumbnail']; ?>" alt="" class="w-100">
+              <?php else: ?>
                 <img src="<?php echo $this->crud_model->get_course_thumbnail_url($course_details['id']); ?>" alt="" class="w-100">
-                <span class="preview-text"><?php echo site_phrase('preview_this_course'); ?></span>
-                <span class="play-btn"></span>
-              </a>
-            </div>
-          <?php endif; ?>
+              <?php endif; ?>
+              <span class="preview-text"><?php echo site_phrase('preview_this_course'); ?></span>
+              <span class="play-btn"></span>
+            </a>
+          </div>
+        <?php endif; ?>
+
           <div class="course-sidebar-text-box">
             <div class="price text-center">
               <?php if ($course_details['is_free_course'] == 1) : ?>
