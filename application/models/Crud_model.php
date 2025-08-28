@@ -2655,49 +2655,91 @@ class Crud_model extends CI_Model
     }
 
     // code of mark this lesson as completed
-    function update_watch_history_manually($lesson_id = "", $course_id = "")
-    {
-        $is_completed = 0;
-        if($lesson_id == ""){
-            $lesson_id = $this->input->post('lesson_id');
-        }
-        if($course_id == ""){
-            $course_id = $this->input->post('course_id');
-        }
-        $user_id   = $this->session->userdata('user_id');
-        $query = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
-        $course_progress = $query->row('course_progress');
-        if($query->num_rows() > 0){
-            $lesson_ids = json_decode($query->row('completed_lesson'), true);
-            if(!is_array($lesson_ids)) $lesson_ids = array();
-            if(!in_array($lesson_id, $lesson_ids)){
-                array_push($lesson_ids, $lesson_id);
-                $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
-                $course_progress = (100/$total_lesson) * count($lesson_ids);
+    // Ganti fungsi lama dengan yang ini di Crud_model.php
+    function update_watch_history_manually($user_id, $course_id, $lesson_id, $progress) {
+        // Cek apakah sudah ada riwayat tontonan untuk kursus ini
+        $watch_history = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
 
-                $this->db->where('watch_history_id', $query->row('watch_history_id'));
-                $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
-                $is_completed = 1;
-            }else{
-                if (($key = array_search($lesson_id, $lesson_ids)) !== false) {
-                    unset($lesson_ids[$key]);
+        if ($watch_history->num_rows() > 0) {
+            // Jika sudah ada, update datanya
+            $watch_history_row = $watch_history->row_array();
+            $completed_lessons = json_decode($watch_history_row['completed_lesson'], true);
+            if (!is_array($completed_lessons)) {
+                $completed_lessons = array();
+            }
+
+            if ($progress == 1) {
+                // Jika dicentang (progress = 1), tambahkan lesson_id ke array
+                if (!in_array($lesson_id, $completed_lessons)) {
+                    array_push($completed_lessons, $lesson_id);
                 }
-                $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
-                $course_progress = (100/$total_lesson) * count($lesson_ids);
-
-                $this->db->where('watch_history_id', $query->row('watch_history_id'));
-                $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
-                $is_completed = 0;
+            } else {
+                // Jika centang dihilangkan (progress = 0), hapus lesson_id dari array
+                if (($key = array_search($lesson_id, $completed_lessons)) !== false) {
+                    unset($completed_lessons[$key]);
+                }
             }
-            // CHECK IF THE USER IS ELIGIBLE FOR CERTIFICATE
-            if (addon_status('certificate') && $course_progress >= 100) {
-                $this->load->model('addons/Certificate_model', 'certificate_model');
-                $this->certificate_model->check_certificate_eligibility($course_id, $user_id);
+
+            // Simpan kembali array yang sudah diperbarui
+            $data['completed_lesson'] = json_encode(array_values($completed_lessons)); // array_values untuk merapikan indeks
+            $data['date_updated'] = time();
+            $this->db->where('watch_history_id', $watch_history_row['watch_history_id']);
+            $this->db->update('watch_histories', $data);
+        } else {
+            // Jika belum ada riwayat, buat baru (hanya jika mencentang pertama kali)
+            if ($progress == 1) {
+                $data['course_id'] = $course_id;
+                $data['student_id'] = $user_id;
+                $data['watching_lesson_id'] = $lesson_id;
+                $data['completed_lesson'] = json_encode(array($lesson_id));
+                $data['date_added'] = time();
+                $this->db->insert('watch_histories', $data);
             }
         }
-
-        return json_encode(array('lesson_id' => $lesson_id, 'course_progress' => round($course_progress), 'is_completed' => $is_completed));
     }
+    // function update_watch_history_manually($lesson_id = "", $course_id = "")
+    // {
+    //     $is_completed = 0;
+    //     if($lesson_id == ""){
+    //         $lesson_id = $this->input->post('lesson_id');
+    //     }
+    //     if($course_id == ""){
+    //         $course_id = $this->input->post('course_id');
+    //     }
+    //     $user_id   = $this->session->userdata('user_id');
+    //     $query = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
+    //     $course_progress = $query->row('course_progress');
+    //     if($query->num_rows() > 0){
+    //         $lesson_ids = json_decode($query->row('completed_lesson'), true);
+    //         if(!is_array($lesson_ids)) $lesson_ids = array();
+    //         if(!in_array($lesson_id, $lesson_ids)){
+    //             array_push($lesson_ids, $lesson_id);
+    //             $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+    //             $course_progress = (100/$total_lesson) * count($lesson_ids);
+
+    //             $this->db->where('watch_history_id', $query->row('watch_history_id'));
+    //             $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
+    //             $is_completed = 1;
+    //         }else{
+    //             if (($key = array_search($lesson_id, $lesson_ids)) !== false) {
+    //                 unset($lesson_ids[$key]);
+    //             }
+    //             $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+    //             $course_progress = (100/$total_lesson) * count($lesson_ids);
+
+    //             $this->db->where('watch_history_id', $query->row('watch_history_id'));
+    //             $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
+    //             $is_completed = 0;
+    //         }
+    //         // CHECK IF THE USER IS ELIGIBLE FOR CERTIFICATE
+    //         if (addon_status('certificate') && $course_progress >= 100) {
+    //             $this->load->model('addons/Certificate_model', 'certificate_model');
+    //             $this->certificate_model->check_certificate_eligibility($course_id, $user_id);
+    //         }
+    //     }
+
+    //     return json_encode(array('lesson_id' => $lesson_id, 'course_progress' => round($course_progress), 'is_completed' => $is_completed));
+    // }
 
 
 

@@ -114,3 +114,62 @@
   height: 400px;     /* Atur tinggi */
   border-radius: 10px; /* opsional, biar rounded */
 }
+
+/* Supaya ada gap dari header/atas dan kiri-kanan */
+#video_player_area {
+    margin-top: 20px;   /* jarak dari header */
+    padding: 0 20px;    /* jarak kiri-kanan */
+}
+
+/* Video player container */
+.plyr__video-embed {
+    height: 550px !important;     /* bikin lebih besar */
+    border-radius: 12px;          /* sudut melengkung */
+    overflow: hidden;             /* biar iframe ikut melengkung */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* bayangan halus */
+}
+
+/* Supaya iframe ikut radius */
+.plyr__video-embed iframe {
+    border-radius: 12px;
+}
+
+// Sidebar customization lesson page
+
+/* Atur ukuran sidebar biar lebih lebar */
+@media (min-width: 992px) {
+  #lesson_list_area {
+    flex: 0 0 350px !important;  /* lebar sidebar */
+    max-width: 350px !important;
+  }
+}
+
+/* Judul sidebar */
+#lesson_list_area h5 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+/* List lesson */
+#lesson_list_area table tr td a {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: #222 !important;
+}
+
+/* Efek hover  */
+#lesson_list_area table tr:hover {
+  background: #f3f6f9;
+  cursor: pointer;
+}
+
+/* Durasi lesson */
+#lesson_list_area .lesson_duration {
+  font-size: 12px;
+  color: #777;
+  margin-left: 20px;
+}
+
+

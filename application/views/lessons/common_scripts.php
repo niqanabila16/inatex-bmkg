@@ -7,23 +7,52 @@ var lessonType = '<?php echo $lesson_details['lesson_type']; ?>';
 var videoProvider = '<?php echo isset($provider) ? $provider : null; ?>';
 
 function markThisLessonAsCompleted(lesson_id) {
-  $('#lesson_list_area').hide();
-  $('#lesson_list_loader').show();
-  var course_id = "<?php echo $course_details['id']; ?>";
+    // Tampilkan loader
+    $('#lesson_list_area').hide();
+    $('#lesson_list_loader').show();
+    
+    // Ambil status terbaru dari checkbox (apakah dicentang atau tidak)
+    var progress = $('#' + lesson_id).is(':checked') ? 1 : 0;
 
-  $.ajax({
-    type : 'POST',
-    url : '<?php echo site_url('home/update_watch_history_manually'); ?>',
-    data : {lesson_id : lesson_id, course_id:course_id},
-    success : function(response){
-      $('#lesson_list_area').show();
-      $('#lesson_list_loader').hide();
-      var responseVal = JSON.parse(response);
-      // console.log(responseVal);
-      // console.log(responseVal.course_progress);
-    }
-  });
+    $.ajax({
+        type: 'POST',
+        // Panggil controller yang benar
+        url: '<?php echo site_url('home/save_course_progress'); ?>',
+        // Kirim data yang dibutuhkan oleh controller
+        data: { lesson_id: lesson_id, progress: progress },
+        dataType: 'json',
+        success: function(response){
+            // Sembunyikan loader
+            $('#lesson_list_area').show();
+            $('#lesson_list_loader').hide();
+            
+            // Buat string progres yang baru dari data respons JSON
+            var progressText = response.progress + '% ' + '<?php echo site_phrase('completed'); ?>' + ' (' + response.completed_lessons + '/' + response.total_lessons + ')';
+            
+            // Perbarui teks di header
+            $('#course_progress_indicator').text(progressText);
+        }
+    });
 }
+
+// function markThisLessonAsCompleted(lesson_id) {
+//   $('#lesson_list_area').hide();
+//   $('#lesson_list_loader').show();
+//   var course_id = "<?php echo $course_details['id']; ?>";
+
+//   $.ajax({
+//     type : 'POST',
+//     url : '<?php echo site_url('home/update_watch_history_manually'); ?>',
+//     data : {lesson_id : lesson_id, course_id:course_id},
+//     success : function(response){
+//       $('#lesson_list_area').show();
+//       $('#lesson_list_loader').hide();
+//       var responseVal = JSON.parse(response);
+//       // console.log(responseVal);
+//       // console.log(responseVal.course_progress);
+//     }
+//   });
+// }
 
 
 $(document).ready(function() {

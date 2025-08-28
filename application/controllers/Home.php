@@ -1,4 +1,11 @@
 <?php
+error_log("QID: ".$quiz_question['id']);
+error_log("Correct: ".json_encode($correct_answers));
+error_log("Submitted: ".json_encode($submitted_answers));
+log_message('error', 'Cek error log');
+log_message('debug', 'Cek debug log');
+log_message('info', 'Cek info log');
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Home extends CI_Controller
@@ -923,28 +930,59 @@ class Home extends CI_Controller
         $total_correct_answers = 0;
         foreach ($quiz_questions as $quiz_question) {
             $submitted_answer_status = 0;
+            // Jawaban dari DB (berupa array teks)
             $correct_answers = json_decode($quiz_question['correct_answers']);
-            $submitted_answers = array();
-            foreach ($this->input->post($quiz_question['id']) as $each_submission) {
-                if (isset($each_submission)) {
-                    array_push($submitted_answers, $each_submission);
+
+             // Ambil semua pilihan jawaban (options) untuk pertanyaan ini
+            $options = json_decode($quiz_question['options']);
+            $submitted_answers_text = array(); // Array baru untuk menyimpan jawaban siswa dalam bentuk TEKS
+
+            // Ambil jawaban siswa (berupa array indeks dari form, misal: ['1', '3'])
+            $submitted_answers_indexes = (array) $this->input->post($quiz_question['id']);
+
+            if ($submitted_answers_indexes) {
+                foreach ($submitted_answers_indexes as $index) {
+                    // Konversi setiap indeks menjadi teks jawaban yang sesuai.
+                    // Indeks dari form (1,2,3) perlu dikurangi 1 untuk cocok dengan array (0,1,2).
+                    if (isset($options[$index - 1])) {
+                        array_push($submitted_answers_text, $options[$index - 1]);
+                    }
                 }
             }
+            
+            // $submitted_data = (array) $this->input->post($quiz_question['id']); 
+            // $submitted_answers = array();
+
+            // foreach ($submitted_data as $each_submission) {
+            //     if (!empty($each_submission)) {
+            //         $submitted_answers[] = trim($each_submission);
+            //     }
+            // }
+
+            // Urutkan kedua array untuk memastikan perbandingan konsisten,
+            // terutama untuk soal dengan lebih dari satu jawaban benar.
             sort($correct_answers);
-            sort($submitted_answers);
-            if ($correct_answers == $submitted_answers) {
+            sort($submitted_answers_text);
+
+            // sort($submitted_answers);
+            // Bandingkan jawaban tipe dataTEKS dengan TEKS 
+            if ($correct_answers == $submitted_answers_text) {
                 $submitted_answer_status = 1;
                 $total_correct_answers++;
             }
+
             $container = array(
                 "question_id" => $quiz_question['id'],
                 'submitted_answer_status' => $submitted_answer_status,
-                "submitted_answers" => json_encode($submitted_answers),
+                // "submitted_answers" => json_encode($submitted_answers),
+            // Simpan jawaban siswa yang asli (indeks) untuk ditampilkan di view hasil
+                "submitted_answers" => json_encode($submitted_answers_indexes ? $submitted_answers_indexes : []),
                 "correct_answers"  => json_encode($correct_answers),
             );
             array_push($submitted_quiz_info, $container);
         }
 
+        // Panggil fungsi untuk menyimpan skor akhir ke database
         $this->save_quiz_result($course_id, $quiz_id, $total_correct_answers);
 
         $page_data['submitted_quiz_info']   = $submitted_quiz_info;
@@ -958,7 +996,6 @@ class Home extends CI_Controller
             $this->load->view('lessons/quiz_result', $page_data);
         }
     }
-
     function save_quiz_result($course_id = "", $quiz_id = "", $obtained_marks = ''){
         $student_id = $this->session->userdata('user_id');
         $this->db->where('course_id', $course_id);
@@ -1040,6 +1077,37 @@ class Home extends CI_Controller
         $page_data['page_name'] = '404';
         $page_data['page_title'] = site_phrase('404_page_not_found');
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+    }
+
+    // AJAX CALL FUNCTION FOR SAVING COURSE PROGRESS (baru)
+    public function save_course_progress() {
+        if ($this->session->userdata('user_login') != true) {
+            return;
+        }
+
+        $lesson_id = $this->input->post('lesson_id');
+        $progress = $this->input->post('progress');
+        $user_id = $this->session->userdata('user_id');
+        $course_id = $this->db->get_where('lesson', array('id' => $lesson_id))->row('course_id');
+
+        // Panggil fungsi di model dengan SEMUA parameter yang dibutuhkan
+        $this->crud_model->update_watch_history_manually($user_id, $course_id, $lesson_id, $progress);
+
+        // Siapkan data respons JSON yang lengkap
+        $watch_history = $this->crud_model->get_watch_histories($user_id, $course_id)->row_array();
+        $completed_lesson_ids = json_decode($watch_history['completed_lesson'], true);
+        $total_lessons = $this->crud_model->get_lessons('course', $course_id)->num_rows();
+        $number_of_completed_lessons = is_array($completed_lesson_ids) ? count($completed_lesson_ids) : 0;
+        $progress_percentage = round(($total_lessons > 0) ? ($number_of_completed_lessons / $total_lessons) * 100 : 0);
+
+        $response_data = [
+            'progress' => $progress_percentage,
+            'completed_lessons' => $number_of_completed_lessons,
+            'total_lessons' => $total_lessons
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($response_data);
     }
 
     // AJAX CALL FUNCTION FOR CHECKING COURSE PROGRESS
