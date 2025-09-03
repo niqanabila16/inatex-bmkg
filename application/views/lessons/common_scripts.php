@@ -11,12 +11,10 @@ function markThisLessonAsCompleted(lesson_id) {
     $('#lesson_list_area').hide();
     $('#lesson_list_loader').show();
     
-    // Ambil status terbaru dari checkbox (apakah dicentang atau tidak)
     var progress = $('#' + lesson_id).is(':checked') ? 1 : 0;
 
     $.ajax({
         type: 'POST',
-        // Panggil controller yang benar
         url: '<?php echo site_url('home/save_course_progress'); ?>',
         // Kirim data yang dibutuhkan oleh controller
         data: { lesson_id: lesson_id, progress: progress },
@@ -48,8 +46,8 @@ function markThisLessonAsCompleted(lesson_id) {
 //       $('#lesson_list_area').show();
 //       $('#lesson_list_loader').hide();
 //       var responseVal = JSON.parse(response);
-//       // console.log(responseVal);
-//       // console.log(responseVal.course_progress);
+//       console.log(responseVal);
+//       console.log(responseVal.course_progress);
 //     }
 //   });
 // }

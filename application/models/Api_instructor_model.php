@@ -1186,17 +1186,67 @@ class Api_instructor_model extends CI_Model
 		return $response;
 	}
 
-	public function delete_lesson_get($lesson_id = "", $user_id = "")
-	{
-		$response = array();
+	// Di dalam file: application/models/api_instructor_model.php
 
-		$this->db->where('id', $lesson_id);
-		$this->db->delete('lesson');
-		$response['message'] = api_phrase('lesson_deleted');
-		$response['status'] = 200;
-		$response['validity'] = 1;
-		return $response;
-	}
+// Hapus fungsi lama delete_lesson_get() dan ganti dengan ini:
+public function delete_lesson_post($lesson_id = "", $user_id = "")
+{
+    $response = array();
+    
+    // 1. Pengecekan Keamanan: Pastikan pelajaran ini milik instruktur yang sedang login
+    $lesson_details = $this->db->get_where('lesson', array('id' => $lesson_id))->row_array();
+    $course_details = $this->db->get_where('course', array('id' => $lesson_details['course_id']))->row_array();
+    if ($course_details['creator'] != $user_id) {
+        $response['message'] = 'You are not authorized to delete this lesson.';
+        $response['status'] = 403;
+        $response['validity'] = 0;
+        return $response;
+    }
+
+    // 2. Hapus pelajaran dari tabel 'lesson'
+    $this->db->where('id', $lesson_id);
+    $this->db->delete('lesson');
+
+    // 3. Logika BARU: Bersihkan ID pelajaran ini dari semua riwayat tontonan
+    $histories = $this->db->get('watch_histories')->result_array();
+    foreach ($histories as $history) {
+        $completed = json_decode($history['completed_lesson'], true);
+        if (is_array($completed) && in_array($lesson_id, $completed)) {
+            // Hapus lesson_id dari array
+            if (($key = array_search($lesson_id, $completed)) !== false) {
+                unset($completed[$key]);
+            }
+            
+            // Hitung ulang progres
+            $total_lessons = $this->db->get_where('lesson', array('course_id' => $history['course_id']))->num_rows();
+            $progress_percentage = ($total_lessons > 0) ? round((count($completed) / $total_lessons) * 100) : 0;
+
+            // Update kembali ke database
+            $updated_data['completed_lesson'] = json_encode(array_values($completed));
+            $updated_data['course_progress'] = $progress_percentage;
+
+            $this->db->where('watch_history_id', $history['watch_history_id']);
+            $this->db->update('watch_histories', $updated_data);
+        }
+    }
+
+    $response['message'] = api_phrase('lesson_deleted_successfully');
+    $response['status'] = 200;
+    $response['validity'] = 1;
+    return $response;
+}
+
+	// public function delete_lesson_get($lesson_id = "", $user_id = "")
+	// {
+	// 	$response = array();
+
+	// 	$this->db->where('id', $lesson_id);
+	// 	$this->db->delete('lesson');
+	// 	$response['message'] = api_phrase('lesson_deleted');
+	// 	$response['status'] = 200;
+	// 	$response['validity'] = 1;
+	// 	return $response;
+	// }
 
 	public function sort_post($user_id = "", $type = "")
 	{

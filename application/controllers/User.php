@@ -250,6 +250,7 @@ class User extends CI_Controller
         echo json_encode($json_data);
     }
 
+    // CRUD course
     public function course_actions($param1 = "", $param2 = "")
     {
         if ($this->session->userdata('user_login') != true) {

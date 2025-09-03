@@ -352,17 +352,38 @@ class Api_instructor extends REST_Controller {
     return $this->set_response($response, REST_Controller::HTTP_OK);
   }
 
-  public function delete_lesson_get() {
+  // Di dalam file: application/controllers/api/Api_instructor.php
+
+// Ganti fungsi lama delete_lesson_get() dengan ini:
+public function delete_lesson_post() {
     $response = array();
 
-    if(isset($_GET['auth_token']) && !empty($_GET['auth_token']) && isset($_GET['lesson_id']) && !empty($_GET['lesson_id'])){
-      $auth_token = $_GET['auth_token'];
-      $lesson_id = $_GET['lesson_id'];
-      $user_details = json_decode($this->token_data_get($auth_token), true);
-      $response = $this->api_instructor_model->delete_lesson_get($lesson_id, $user_details['user_id']);
+    // Ambil data dari POST, bukan GET
+    $auth_token = $this->input->post('auth_token');
+    $lesson_id  = $this->input->post('lesson_id');
+
+    if($auth_token && $lesson_id){
+        $user_details = json_decode($this->token_data_get($auth_token), true);
+        // Panggil fungsi model yang baru
+        $response = $this->api_instructor_model->delete_lesson_post($lesson_id, $user_details['user_id']);
+    }else{
+        $response['message'] = 'Invalid token or lesson ID';
+        $response['status'] = 403;
     }
+    
     return $this->set_response($response, REST_Controller::HTTP_OK);
-  }
+}
+  // public function delete_lesson_get() {
+  //   $response = array();
+
+  //   if(isset($_GET['auth_token']) && !empty($_GET['auth_token']) && isset($_GET['lesson_id']) && !empty($_GET['lesson_id'])){
+  //     $auth_token = $_GET['auth_token'];
+  //     $lesson_id = $_GET['lesson_id'];
+  //     $user_details = json_decode($this->token_data_get($auth_token), true);
+  //     $response = $this->api_instructor_model->delete_lesson_get($lesson_id, $user_details['user_id']);
+  //   }
+  //   return $this->set_response($response, REST_Controller::HTTP_OK);
+  // }
 
   public function sort_post() {
     $response = array();

@@ -748,19 +748,19 @@ class Crud_model extends CI_Model
 
     public function get_course_thumbnail_url($course_id, $type = 'course_thumbnail')
     {
-        // Course media placeholder is coming from the theme config file. Which has all the placehoder for different images. Choose like course type.
+        // Ambil placeholder dari file konfigurasi tema
         $course_media_placeholders = themeConfiguration(get_frontend_settings('theme'), 'course_media_placeholders');
-        // if (file_exists('uploads/thumbnails/course_thumbnails/'.$type.'_'.get_frontend_settings('theme').'_'.$course_id.'.jpg')){
-        //     return base_url().'uploads/thumbnails/course_thumbnails/'.$type.'_'.get_frontend_settings('theme').'_'.$course_id.'.jpg';
-        // } elseif(file_exists('uploads/thumbnails/course_thumbnails/'.$course_id.'.jpg')){
-        //     return base_url().'uploads/thumbnails/course_thumbnails/'.$course_id.'.jpg';
-        // } else{
-        //     return $course_media_placeholders[$type.'_placeholder'];
-        // }
-        if (file_exists('uploads/thumbnails/course_thumbnails/' . $type . '_' . get_frontend_settings('theme') . '_' . $course_id . '.jpg')) {
-            return base_url() . 'uploads/thumbnails/course_thumbnails/' . $type . '_' . get_frontend_settings('theme') . '_' . $course_id . '.jpg';
+        $theme = get_frontend_settings('theme');
+        
+        $file_path_theme = 'uploads/thumbnails/course_thumbnails/' . $type . '_' . $theme . '_' . $course_id . '.jpg';
+        $file_path_simple = 'uploads/thumbnails/course_thumbnails/' . $course_id . '.jpg';
+
+        if (file_exists($file_path_theme)) {
+            return base_url($file_path_theme);
+        } elseif (file_exists($file_path_simple)) {
+            return base_url($file_path_simple);
         } else {
-            return base_url() . $course_media_placeholders[$type . '_placeholder'];
+            return base_url($course_media_placeholders[$type . '_placeholder']);
         }
     }
     public function get_lesson_thumbnail_url($lesson_id)
@@ -2655,48 +2655,65 @@ class Crud_model extends CI_Model
     }
 
     // code of mark this lesson as completed
-    // Ganti fungsi lama dengan yang ini di Crud_model.php
+    // Di dalam file application/models/Crud_model.php
     function update_watch_history_manually($user_id, $course_id, $lesson_id, $progress) {
-        // Cek apakah sudah ada riwayat tontonan untuk kursus ini
+        // Cari riwayat tontonan untuk pengguna dan kursus ini
         $watch_history = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
 
         if ($watch_history->num_rows() > 0) {
-            // Jika sudah ada, update datanya
+            // JIKA RIWAYAT SUDAH ADA, UPDATE
             $watch_history_row = $watch_history->row_array();
             $completed_lessons = json_decode($watch_history_row['completed_lesson'], true);
             if (!is_array($completed_lessons)) {
                 $completed_lessons = array();
             }
 
+            // Logika dipisah berdasarkan nilai $progress
             if ($progress == 1) {
-                // Jika dicentang (progress = 1), tambahkan lesson_id ke array
+                // Jika dicentang (progress = 1), tambahkan lesson_id
                 if (!in_array($lesson_id, $completed_lessons)) {
                     array_push($completed_lessons, $lesson_id);
                 }
             } else {
-                // Jika centang dihilangkan (progress = 0), hapus lesson_id dari array
+                // Jika centang dihilangkan (progress = 0), hapus lesson_id
                 if (($key = array_search($lesson_id, $completed_lessons)) !== false) {
                     unset($completed_lessons[$key]);
                 }
             }
 
-            // Simpan kembali array yang sudah diperbarui
-            $data['completed_lesson'] = json_encode(array_values($completed_lessons)); // array_values untuk merapikan indeks
+            // --- Perhitungan Progres yang Benar ---
+            $total_lessons = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+            $number_of_completed_lessons = count($completed_lessons);
+            $progress_percentage = ($total_lessons > 0) ? round(($number_of_completed_lessons / $total_lessons) * 100) : 0;
+
+            // Siapkan data untuk di-update
+            $data['completed_lesson'] = json_encode(array_values($completed_lessons)); // Penting: gunakan array_values
+            $data['course_progress'] = $progress_percentage;
             $data['date_updated'] = time();
+
             $this->db->where('watch_history_id', $watch_history_row['watch_history_id']);
             $this->db->update('watch_histories', $data);
+
         } else {
-            // Jika belum ada riwayat, buat baru (hanya jika mencentang pertama kali)
-            if ($progress == 1) {
-                $data['course_id'] = $course_id;
-                $data['student_id'] = $user_id;
-                $data['watching_lesson_id'] = $lesson_id;
-                $data['completed_lesson'] = json_encode(array($lesson_id));
-                $data['date_added'] = time();
-                $this->db->insert('watch_histories', $data);
+
+                if ($progress == 1) {
+                    $data['course_id'] = $course_id;
+                    $data['student_id'] = $user_id;
+                    $data['watching_lesson_id'] = $lesson_id;
+                    $data['completed_lesson'] = json_encode(array($lesson_id));
+                    
+                    // Hitung progres untuk data baru
+                    $total_lessons = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+                    $data['course_progress'] = ($total_lessons > 0) ? round((1 / $total_lessons) * 100) : 0;
+                    
+                    // FIX: Tambahkan nilai default untuk kolom NOT NULL yang lain
+                    $data['quiz_result'] = '[]'; // Memberi nilai default array JSON kosong
+                    
+                    $data['date_added'] = time();
+                    $this->db->insert('watch_histories', $data);
+                }
             }
         }
-    }
     // function update_watch_history_manually($lesson_id = "", $course_id = "")
     // {
     //     $is_completed = 0;

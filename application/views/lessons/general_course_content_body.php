@@ -1,4 +1,4 @@
-<div class="col-lg-7 order-1 course_col" id = "video_player_area">
+<div class="col-lg-9 order-1 course_col" id = "video_player_area">
     <!-- <div class="" style="background-color: #333;"> -->
     <?php if($show_locked_message && $course_details['enable_drip_content']): ?>
         <div class="py-5">

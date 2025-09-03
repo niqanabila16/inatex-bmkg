@@ -11,6 +11,22 @@ endif;
 $course_details_url = site_url("home/course/".slugify($course_details['title'])."/".$course_id);
 ?>
 <div class="container-fluid course_container">
+    <style>
+  .course_header_col h5 {
+    font-size: 18px !important; /* Atur ukuran font judul di sini */
+    margin-bottom: 0 !important; /* Menghilangkan margin agar lebih rapat */
+    display: flex;
+    align-items: center; /* Membuat logo dan teks sejajar */
+  }
+
+  #course_progress_indicator {
+    font-size: 14px !important; /* Mengecilkan font progress */
+  }
+
+  .course_btn {
+    font-size: 13px !important; /* Mengecilkan font tombol */
+  }
+</style>
     <!-- Top bar -->
     <div class="row">
         <div class="col-md-12 col-lg-7 col-xl-9 course_header_col d-md-flex d-sm-grid">
