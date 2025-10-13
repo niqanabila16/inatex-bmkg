@@ -2407,6 +2407,7 @@ class Crud_model extends CI_Model
             return $response;
         }
     }
+
     // multiple_choice_question crud functions
     function add_multiple_choice_question($quiz_id)
     {
@@ -2418,47 +2419,88 @@ class Crud_model extends CI_Model
                 return false;
             }
         }
-        if (sizeof($this->input->post('correct_answers')) == 0) {
-            $correct_answers = [""];
-        } else {
-            $correct_answers = $this->input->post('correct_answers');
-        }
-        $data['quiz_id']            = $quiz_id;
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
-        $this->db->insert('question', $data);
-        return true;
-    }
-    // update multiple choice question
-    function update_multiple_choice_question($question_id)
-    {
-        if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
-            return false;
-        }
-        foreach ($this->input->post('options') as $option) {
-            if ($option == "") {
-                return false;
+        $options = $this->input->post('options');
+        $correct_answer_indices = $this->input->post('correct_answers');
+
+        $correct_answer_texts = array();
+
+        // Mengubah mapping dari indeks ke teks jawaban
+        if (!empty($correct_answer_indices)) {
+            foreach ($correct_answer_indices as $index) {
+                if (isset($options[$index])) { // Kurangi 1 karena indeks form biasanya dimulai dari 1  
+                    // Masukkan teks jawaban yang sesuai ke array baru
+                    $correct_answer_texts[] = $options[$index];
+                }
             }
         }
 
-        if (sizeof($this->input->post('correct_answers')) == 0) {
-            $correct_answers = [""];
-        } else {
-            $correct_answers = $this->input->post('correct_answers');
-        }
-
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
-        $this->db->where('id', $question_id);
-        $this->db->update('question', $data);
+        $data['quiz_id']           = $quiz_id;
+        $data['title']             = html_escape($this->input->post('title'));
+        $data['number_of_options'] = html_escape($this->input->post('number_of_options'));
+        $data['type']              = 'multiple_choice';
+        $data['options']           = json_encode($options); // Simpan semua pilihan
+        $data['correct_answers']   = json_encode($correct_answer_texts); // Simpan teks jawaban yang benar
+        $this->db->insert('question', $data);
         return true;
+            }
+    //     if (sizeof($this->input->post('correct_answers')) == 0) {
+    //         $correct_answers = [""];
+    //     } else {
+    //         $correct_answers = $this->input->post('correct_answers');
+    //     }
+    //     $data['quiz_id']            = $quiz_id;
+    //     $data['title']              = html_escape($this->input->post('title'));
+    //     $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+    //     $data['type']               = 'multiple_choice';
+    //     $data['options']            = json_encode($this->input->post('options'));
+    //     $data['correct_answers']    = json_encode($correct_answers);
+    //     $this->db->insert('question', $data);
+    //     return true;
+    // }
+
+    // update multiple choice question
+// GANTI SELURUH FUNGSI ANDA DENGAN INI
+function update_multiple_choice_question($question_id)
+{
+    // Validasi dasar
+    if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+        return false;
     }
+    foreach ($this->input->post('options') as $option) {
+        if ($option == "") {
+            return false;
+        }
+    }
+
+    // Ambil semua teks pilihan jawaban dan indeks jawaban yang benar dari form
+    $options = $this->input->post('options');
+    $correct_answer_indices = $this->input->post('correct_answers');
+
+    // Siapkan array kosong untuk menampung TEKS jawaban yang benar
+    $correct_answer_texts = array();
+
+    // Lakukan mapping dari indeks ke teks jawaban
+    if (!empty($correct_answer_indices)) {
+        foreach ($correct_answer_indices as $index) {
+            // INI BAGIAN PENTING: Gunakan ($index - 1)
+            if (isset($options[$index - 1])) {
+                $correct_answer_texts[] = $options[$index - 1];
+            }
+        }
+    }
+
+    // Siapkan data untuk diupdate ke database
+    $data['title']             = $this->input->post('title'); // Hapus html_escape() jika mengikuti saran sebelumnya
+    $data['number_of_options'] = $this->input->post('number_of_options');
+    $data['type']              = 'multiple_choice';
+    $data['options']           = json_encode($options);
+    $data['correct_answers']   = json_encode($correct_answer_texts);
+
+    // Lakukan update pada database
+    $this->db->where('id', $question_id);
+    $this->db->update('question', $data);
+    return true;
+}
 
     function delete_quiz_question($question_id)
     {
