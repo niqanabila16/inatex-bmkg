@@ -42,7 +42,10 @@ $sections = $this->crud_model->get_section('course', $course_id)->result_array()
                                         <?php else: ?>
                                             <a href="javascript::" onclick="showAjaxModal('<?php echo site_url('modal/popup/lesson_edit/'.$lesson['id'].'/'.$course_id); ?>', '<?php echo get_phrase('update_lesson'); ?>')"><i class="mdi mdi-pencil-outline"></i></a>
                                         <?php endif; ?>
-                                        <a href="javascript::" onclick="confirm_modal('<?php echo site_url('admin/lessons/'.$course_id.'/delete'.'/'.$lesson['id']); ?>');"><i class="mdi mdi-window-close"></i></a>
+                                        <!-- <a href="javascript::" onclick="confirm_modal('<?php echo site_url('admin/lessons/'.$course_id.'/delete'.'/'.$lesson['id']); ?>');"><i class="mdi mdi-window-close"></i></a> -->
+                                         <a href="javascript::" onclick="confirm_modal('<?php echo site_url('admin/lessons/'.$course_id.'/delete'.'/'.$lesson['id']); ?>');">
+                                            <i class="mdi mdi-window-close"></i>
+                                        </a>
                                     </div>
                                     <h5 class="card-title mb-0">
                                         <span class="font-weight-light">
@@ -70,7 +73,36 @@ $sections = $this->crud_model->get_section('course', $course_id)->result_array()
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div>
-    <?php endforeach; ?>
-</div>
-</div>
-</div>
+      <?php endforeach; ?>
+      <!-- Taruh ini di bagian paling bawah file curriculum.php -->
+<script type="text/javascript">
+function delete_lesson_via_api(lesson_id) {
+    if (confirm("<?php echo get_phrase('are_you_sure_to_delete_this_lesson'); ?>")) {
+        
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo site_url('api/api_instructor/delete_lesson_post'); ?>', // URL ke API yang sudah benar
+            data: { 
+                lesson_id: lesson_id,
+                // Anda perlu menyediakan auth_token di sini
+                auth_token: 'TOKEN_ANDA' // Ganti ini dengan cara Anda mendapatkan token
+            },
+            dataType: 'json',
+            success: function(response) {
+                if(response.status == 200){
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert(response.message || "Gagal menghapus pelajaran.");
+                }
+            },
+            error: function() {
+                alert("Terjadi kesalahan koneksi. Silakan coba lagi.");
+            }
+        });
+    }
+}
+</script>
+        </div>
+        </div>
+        </div>

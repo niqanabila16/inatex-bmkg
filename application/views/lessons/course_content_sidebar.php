@@ -24,16 +24,6 @@
                 <li class="nav-item">
                     <a class="nav-link active text-muted" id="section_and_lessons-tab" data-bs-toggle="tab" href="#section_and_lessons" role="tab" aria-controls="section_and_lessons" aria-selected="true"><?php echo get_phrase('Lessons') ?></a>
                 </li>
-                <!-- ZOOM LIVE CLASS TAB STARTS -->
-                <?php if (addon_status('live-class') || addon_status('jitsi-live-class')): ?>
-                    <li class="nav-item">
-                        <a class="nav-link text-muted" id="liveclass-tab" data-bs-toggle="tab" href="#liveclass" role="tab" aria-controls="liveclass" aria-selected="false">
-                            <?php echo get_phrase('live_class'); ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-                <!-- ZOOM LIVE CLASS TAB ENDS -->
-
                 <!-- CERTIFICATE TAB -->
                 <?php if (addon_status('certificate')): ?>
                     <li class="nav-item">
@@ -161,80 +151,6 @@
                     <!-- Lesson Content ends from here -->
                 </div>
 
-                <!-- ZOOM LIVE CLASS TAB STARTS-->
-                
-                    <div class="tab-pane fade" id="liveclass" role="tabpanel" aria-labelledby="liveclass-tab" style="text-align: center;">
-                        <?php if (addon_status('live-class')): ?>
-                            <?php
-                            $live_class = $this->db->get_where('live_class', array('course_id' => $course_id));
-                            if ($live_class->num_rows() > 0):
-                                $live_class = $this->db->get_where('live_class', array('course_id' => $course_id))->row_array(); ?>
-                                <div style="padding: 30px 0px;">
-                                    <i class="fa fa-calendar-check"></i> <?php echo get_phrase('zoom_live_class_schedule'); ?>
-                                    <h5 style="margin-top: 20px;"><?php echo date('h:i A', $live_class['time']); ?> : <?php echo date('D, d M Y', $live_class['date']); ?></h5>
-                                    <div class="live_class_note">
-                                        <?php echo $live_class['note_to_students']; ?>
-                                    </div>
-                                    <a href="<?php echo site_url('addons/liveclass/join/'.$course_id);?>" class="btn btn_zoom">
-                                        <i class="fa fa-video"></i>&nbsp;
-                                        <?php echo get_phrase('join_live_video_class'); ?>
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-warning" role="alert" style="padding: 30px 0px;">
-                                  <?php echo get_phrase('live_class_is_not_scheduled_to_this_course_yet'); ?>
-                                </div>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                        <?php if (addon_status('live-class') && addon_status('jitsi-live-class'))echo '<hr>'; ?>
-                        <?php if (addon_status('jitsi-live-class')): ?>
-                            <?php
-                            $live_class = $this->db->get_where('jitsi_live_class', array('course_id' => $course_id));
-                            if ($live_class->num_rows() > 0):
-                                $live_class = $live_class->row_array(); ?>
-                                <div style="padding: 30px 0px;">
-                                    <i class="fa fa-calendar-check"></i> <?php echo get_phrase('jitsi_live_class_schedule'); ?>
-                                    <h5 style="margin-top: 20px;"><?php echo date('h:i A', $live_class['time']); ?> : <?php echo date('D, d M Y', $live_class['date']); ?></h5>
-                                    <div class="live_class_note">
-                                        <?php echo $live_class['note_to_students']; ?>
-                                    </div>
-                                    <a target="_blank" href="<?php echo site_url('addons/jitsi_liveclass/join/'.$course_id);?>" class="btn btn_zoom">
-                                        <i class="fa fa-video"></i>&nbsp;
-                                        <?php echo get_phrase('join_live_video_class'); ?>
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-warning" role="alert" style="padding: 30px 0px;">
-                                  <?php echo get_phrase('live_class_is_not_scheduled_to_this_course_yet'); ?>
-                                </div>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </div>
-
-                    <style>
-                    .live_class_note {
-                        border: 1px solid #bfdde4;
-                        background-color: aliceblue;
-                        margin: 30px 0px 10px;
-                        color: #007791;
-                        font-size: 12px;
-                        padding: 10px;
-                    }
-                    .btn_zoom {
-                        background-color: #2781FF;
-                        border-color: #2781FF;
-                    }
-                    .btn_zoom:hover {
-                        background-color: #2781FF;
-                        border-color: #2781FF;
-                    }
-                    .btn_zoom:focus {
-                        background-color: #2781FF;
-                        border-color: #2781FF;
-                    }
-                    </style>
-                <!-- ZOOM LIVE CLASS TAB ENDS-->
-
                 <?php if (addon_status('certificate')): ?>
                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab" style="text-align: center;">
 
@@ -273,7 +189,35 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
+function markThisLessonAsCompleted(lesson_id) {
+    // Tampilkan loader agar pengguna tahu ada proses yang berjalan
+    $('#lesson_list_area').hide();
+    $('#lesson_list_loader').show();
+    
+    // Ambil status terbaru dari checkbox (apakah dicentang atau tidak)
+    var progress = $('#' + lesson_id).is(':checked') ? 1 : 0;
+
+    $.ajax({
+        type: 'POST',
+        url: '<?php echo site_url('home/save_course_progress'); ?>',
+        data: { lesson_id: lesson_id, progress: progress },
+        dataType: 'json', // Beritahu jQuery kita mengharapkan respons JSON
+        success: function(response){
+            // Sembunyikan loader setelah selesai
+            $('#lesson_list_area').show();
+            $('#lesson_list_loader').hide();
+            
+            // Buat string progres yang baru dari data respons JSON
+            var progressText = response.progress + '% ' + '<?php echo site_phrase('completed'); ?>' + ' (' + response.completed_lessons + '/' + response.total_lessons + ')';
+            
+            // Perbarui teks di header menggunakan ID yang kita buat sebelumnya
+            $('#course_progress_indicator').text(progressText);
+        }
+    });
+}
+
 function toggleAccordionIcon(elem, section_id) {
     var accordion_section_ids = [];
     $(".accordion_icon").each(function(){ accordion_section_ids.push(this.id); });

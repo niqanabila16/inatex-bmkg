@@ -55,7 +55,7 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
-
+error_reporting(E_ALL);
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

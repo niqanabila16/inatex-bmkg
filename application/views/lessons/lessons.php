@@ -11,6 +11,22 @@ endif;
 $course_details_url = site_url("home/course/".slugify($course_details['title'])."/".$course_id);
 ?>
 <div class="container-fluid course_container">
+    <style>
+  .course_header_col h5 {
+    font-size: 18px !important; /* Atur ukuran font judul di sini */
+    margin-bottom: 0 !important; /* Menghilangkan margin agar lebih rapat */
+    display: flex;
+    align-items: center; /* Membuat logo dan teks sejajar */
+  }
+
+  #course_progress_indicator {
+    font-size: 14px !important; /* Mengecilkan font progress */
+  }
+
+  .course_btn {
+    font-size: 13px !important; /* Mengecilkan font tombol */
+  }
+</style>
     <!-- Top bar -->
     <div class="row">
         <div class="col-md-12 col-lg-7 col-xl-12 course_header_col d-md-flex d-sm-grid">
@@ -25,11 +41,9 @@ $course_details_url = site_url("home/course/".slugify($course_details['title']).
                     $completed_lesson_id_rr = json_decode($watch_history['completed_lesson'], true);
                 }
             ?>
-
-            <!-- Indikator progres. -->
-            <span class="d-inline-block ml-auto"><?php echo $watch_history['course_progress'].'% '.site_phrase('completed'); ?> (<?php echo count($completed_lesson_id_rr); ?>/<?php echo $this->crud_model->get_lessons('course', $course_details['id'])->num_rows(); ?>)</span>
-
-            <!-- Tombol. -->
+            <span class="d-inline-block ml-auto " id="course_progress_indicator"><?php echo $watch_history['course_progress'].'% '.site_phrase('completed'); ?>(<?php echo count($completed_lesson_id_rr); ?>/<?php echo $this->crud_model->get_lessons('course', $course_details['id'])->num_rows(); ?>)</span>
+        </div>
+        <div class="col-md-12 col-lg-5 col-xl-3 course_header_col text-right">
             <a href="javascript:;" class="course_btn" onclick="toggle_lesson_view()"><i class="fa fa-arrows-alt-h"></i></a>
             <a href="<?php echo $my_course_url; ?>" class="course_btn"> <i class="fa fa-chevron-left"></i> <?php echo get_phrase($btn_title); ?></a>
             <a href="<?php echo $course_details_url; ?>" class="course_btn"><?php echo get_phrase('course_details'); ?> <i class="fa fa-chevron-right"></i></a>

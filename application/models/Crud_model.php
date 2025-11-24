@@ -751,19 +751,19 @@ class Crud_model extends CI_Model
 
     public function get_course_thumbnail_url($course_id, $type = 'course_thumbnail')
     {
-        // Course media placeholder is coming from the theme config file. Which has all the placehoder for different images. Choose like course type.
+        // Ambil placeholder dari file konfigurasi tema
         $course_media_placeholders = themeConfiguration(get_frontend_settings('theme'), 'course_media_placeholders');
-        // if (file_exists('uploads/thumbnails/course_thumbnails/'.$type.'_'.get_frontend_settings('theme').'_'.$course_id.'.jpg')){
-        //     return base_url().'uploads/thumbnails/course_thumbnails/'.$type.'_'.get_frontend_settings('theme').'_'.$course_id.'.jpg';
-        // } elseif(file_exists('uploads/thumbnails/course_thumbnails/'.$course_id.'.jpg')){
-        //     return base_url().'uploads/thumbnails/course_thumbnails/'.$course_id.'.jpg';
-        // } else{
-        //     return $course_media_placeholders[$type.'_placeholder'];
-        // }
-        if (file_exists('uploads/thumbnails/course_thumbnails/' . $type . '_' . get_frontend_settings('theme') . '_' . $course_id . '.jpg')) {
-            return base_url() . 'uploads/thumbnails/course_thumbnails/' . $type . '_' . get_frontend_settings('theme') . '_' . $course_id . '.jpg';
+        $theme = get_frontend_settings('theme');
+        
+        $file_path_theme = 'uploads/thumbnails/course_thumbnails/' . $type . '_' . $theme . '_' . $course_id . '.jpg';
+        $file_path_simple = 'uploads/thumbnails/course_thumbnails/' . $course_id . '.jpg';
+
+        if (file_exists($file_path_theme)) {
+            return base_url($file_path_theme);
+        } elseif (file_exists($file_path_simple)) {
+            return base_url($file_path_simple);
         } else {
-            return base_url() . $course_media_placeholders[$type . '_placeholder'];
+            return base_url($course_media_placeholders[$type . '_placeholder']);
         }
     }
     public function get_lesson_thumbnail_url($lesson_id)
@@ -2417,6 +2417,7 @@ class Crud_model extends CI_Model
             return $response;
         }
     }
+
     // multiple_choice_question crud functions
     function add_multiple_choice_question($quiz_id)
     {
@@ -2428,47 +2429,88 @@ class Crud_model extends CI_Model
                 return false;
             }
         }
-        if (sizeof($this->input->post('correct_answers')) == 0) {
-            $correct_answers = [""];
-        } else {
-            $correct_answers = $this->input->post('correct_answers');
-        }
-        $data['quiz_id']            = $quiz_id;
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
-        $this->db->insert('question', $data);
-        return true;
-    }
-    // update multiple choice question
-    function update_multiple_choice_question($question_id)
-    {
-        if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
-            return false;
-        }
-        foreach ($this->input->post('options') as $option) {
-            if ($option == "") {
-                return false;
+        $options = $this->input->post('options');
+        $correct_answer_indices = $this->input->post('correct_answers');
+
+        $correct_answer_texts = array();
+
+        // Mengubah mapping dari indeks ke teks jawaban
+        if (!empty($correct_answer_indices)) {
+            foreach ($correct_answer_indices as $index) {
+                if (isset($options[$index])) { // Kurangi 1 karena indeks form biasanya dimulai dari 1  
+                    // Masukkan teks jawaban yang sesuai ke array baru
+                    $correct_answer_texts[] = $options[$index];
+                }
             }
         }
 
-        if (sizeof($this->input->post('correct_answers')) == 0) {
-            $correct_answers = [""];
-        } else {
-            $correct_answers = $this->input->post('correct_answers');
-        }
-
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
-        $this->db->where('id', $question_id);
-        $this->db->update('question', $data);
+        $data['quiz_id']           = $quiz_id;
+        $data['title']             = html_escape($this->input->post('title'));
+        $data['number_of_options'] = html_escape($this->input->post('number_of_options'));
+        $data['type']              = 'multiple_choice';
+        $data['options']           = json_encode($options); // Simpan semua pilihan
+        $data['correct_answers']   = json_encode($correct_answer_texts); // Simpan teks jawaban yang benar
+        $this->db->insert('question', $data);
         return true;
+            }
+    //     if (sizeof($this->input->post('correct_answers')) == 0) {
+    //         $correct_answers = [""];
+    //     } else {
+    //         $correct_answers = $this->input->post('correct_answers');
+    //     }
+    //     $data['quiz_id']            = $quiz_id;
+    //     $data['title']              = html_escape($this->input->post('title'));
+    //     $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+    //     $data['type']               = 'multiple_choice';
+    //     $data['options']            = json_encode($this->input->post('options'));
+    //     $data['correct_answers']    = json_encode($correct_answers);
+    //     $this->db->insert('question', $data);
+    //     return true;
+    // }
+
+    // update multiple choice question
+// GANTI SELURUH FUNGSI ANDA DENGAN INI
+function update_multiple_choice_question($question_id)
+{
+    // Validasi dasar
+    if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+        return false;
     }
+    foreach ($this->input->post('options') as $option) {
+        if ($option == "") {
+            return false;
+        }
+    }
+
+    // Ambil semua teks pilihan jawaban dan indeks jawaban yang benar dari form
+    $options = $this->input->post('options');
+    $correct_answer_indices = $this->input->post('correct_answers');
+
+    // Siapkan array kosong untuk menampung TEKS jawaban yang benar
+    $correct_answer_texts = array();
+
+    // Lakukan mapping dari indeks ke teks jawaban
+    if (!empty($correct_answer_indices)) {
+        foreach ($correct_answer_indices as $index) {
+            // INI BAGIAN PENTING: Gunakan ($index - 1)
+            if (isset($options[$index - 1])) {
+                $correct_answer_texts[] = $options[$index - 1];
+            }
+        }
+    }
+
+    // Siapkan data untuk diupdate ke database
+    $data['title']             = $this->input->post('title'); // Hapus html_escape() jika mengikuti saran sebelumnya
+    $data['number_of_options'] = $this->input->post('number_of_options');
+    $data['type']              = 'multiple_choice';
+    $data['options']           = json_encode($options);
+    $data['correct_answers']   = json_encode($correct_answer_texts);
+
+    // Lakukan update pada database
+    $this->db->where('id', $question_id);
+    $this->db->update('question', $data);
+    return true;
+}
 
     function delete_quiz_question($question_id)
     {
@@ -2665,49 +2707,108 @@ class Crud_model extends CI_Model
     }
 
     // code of mark this lesson as completed
-    function update_watch_history_manually($lesson_id = "", $course_id = "")
-    {
-        $is_completed = 0;
-        if($lesson_id == ""){
-            $lesson_id = $this->input->post('lesson_id');
-        }
-        if($course_id == ""){
-            $course_id = $this->input->post('course_id');
-        }
-        $user_id   = $this->session->userdata('user_id');
-        $query = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
-        $course_progress = $query->row('course_progress');
-        if($query->num_rows() > 0){
-            $lesson_ids = json_decode($query->row('completed_lesson'), true);
-            if(!is_array($lesson_ids)) $lesson_ids = array();
-            if(!in_array($lesson_id, $lesson_ids)){
-                array_push($lesson_ids, $lesson_id);
-                $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
-                $course_progress = (100/$total_lesson) * count($lesson_ids);
+    // Di dalam file application/models/Crud_model.php
+    function update_watch_history_manually($user_id, $course_id, $lesson_id, $progress) {
+        // Cari riwayat tontonan untuk pengguna dan kursus ini
+        $watch_history = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
 
-                $this->db->where('watch_history_id', $query->row('watch_history_id'));
-                $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
-                $is_completed = 1;
-            }else{
-                if (($key = array_search($lesson_id, $lesson_ids)) !== false) {
-                    unset($lesson_ids[$key]);
+        if ($watch_history->num_rows() > 0) {
+            // JIKA RIWAYAT SUDAH ADA, UPDATE
+            $watch_history_row = $watch_history->row_array();
+            $completed_lessons = json_decode($watch_history_row['completed_lesson'], true);
+            if (!is_array($completed_lessons)) {
+                $completed_lessons = array();
+            }
+
+            // Logika dipisah berdasarkan nilai $progress
+            if ($progress == 1) {
+                // Jika dicentang (progress = 1), tambahkan lesson_id
+                if (!in_array($lesson_id, $completed_lessons)) {
+                    array_push($completed_lessons, $lesson_id);
                 }
-                $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
-                $course_progress = (100/$total_lesson) * count($lesson_ids);
-
-                $this->db->where('watch_history_id', $query->row('watch_history_id'));
-                $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
-                $is_completed = 0;
+            } else {
+                // Jika centang dihilangkan (progress = 0), hapus lesson_id
+                if (($key = array_search($lesson_id, $completed_lessons)) !== false) {
+                    unset($completed_lessons[$key]);
+                }
             }
-            // CHECK IF THE USER IS ELIGIBLE FOR CERTIFICATE
-            if (addon_status('certificate') && $course_progress >= 100) {
-                $this->load->model('addons/Certificate_model', 'certificate_model');
-                $this->certificate_model->check_certificate_eligibility($course_id, $user_id);
+
+            // --- Perhitungan Progres yang Benar ---
+            $total_lessons = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+            $number_of_completed_lessons = count($completed_lessons);
+            $progress_percentage = ($total_lessons > 0) ? round(($number_of_completed_lessons / $total_lessons) * 100) : 0;
+
+            // Siapkan data untuk di-update
+            $data['completed_lesson'] = json_encode(array_values($completed_lessons)); // Penting: gunakan array_values
+            $data['course_progress'] = $progress_percentage;
+            $data['date_updated'] = time();
+
+            $this->db->where('watch_history_id', $watch_history_row['watch_history_id']);
+            $this->db->update('watch_histories', $data);
+
+        } else {
+
+                if ($progress == 1) {
+                    $data['course_id'] = $course_id;
+                    $data['student_id'] = $user_id;
+                    $data['watching_lesson_id'] = $lesson_id;
+                    $data['completed_lesson'] = json_encode(array($lesson_id));
+                    
+                    // Hitung progres untuk data baru
+                    $total_lessons = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+                    $data['course_progress'] = ($total_lessons > 0) ? round((1 / $total_lessons) * 100) : 0;
+                    
+                    // FIX: Tambahkan nilai default untuk kolom NOT NULL yang lain
+                    $data['quiz_result'] = '[]'; // Memberi nilai default array JSON kosong
+                    
+                    $data['date_added'] = time();
+                    $this->db->insert('watch_histories', $data);
+                }
             }
         }
+    // function update_watch_history_manually($lesson_id = "", $course_id = "")
+    // {
+    //     $is_completed = 0;
+    //     if($lesson_id == ""){
+    //         $lesson_id = $this->input->post('lesson_id');
+    //     }
+    //     if($course_id == ""){
+    //         $course_id = $this->input->post('course_id');
+    //     }
+    //     $user_id   = $this->session->userdata('user_id');
+    //     $query = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
+    //     $course_progress = $query->row('course_progress');
+    //     if($query->num_rows() > 0){
+    //         $lesson_ids = json_decode($query->row('completed_lesson'), true);
+    //         if(!is_array($lesson_ids)) $lesson_ids = array();
+    //         if(!in_array($lesson_id, $lesson_ids)){
+    //             array_push($lesson_ids, $lesson_id);
+    //             $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+    //             $course_progress = (100/$total_lesson) * count($lesson_ids);
 
-        return json_encode(array('lesson_id' => $lesson_id, 'course_progress' => round($course_progress), 'is_completed' => $is_completed));
-    }
+    //             $this->db->where('watch_history_id', $query->row('watch_history_id'));
+    //             $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
+    //             $is_completed = 1;
+    //         }else{
+    //             if (($key = array_search($lesson_id, $lesson_ids)) !== false) {
+    //                 unset($lesson_ids[$key]);
+    //             }
+    //             $total_lesson = $this->db->get_where('lesson', array('course_id' => $course_id))->num_rows();
+    //             $course_progress = (100/$total_lesson) * count($lesson_ids);
+
+    //             $this->db->where('watch_history_id', $query->row('watch_history_id'));
+    //             $this->db->update('watch_histories', array('course_progress' => $course_progress, 'completed_lesson' => json_encode($lesson_ids), 'date_updated' => time()));
+    //             $is_completed = 0;
+    //         }
+    //         // CHECK IF THE USER IS ELIGIBLE FOR CERTIFICATE
+    //         if (addon_status('certificate') && $course_progress >= 100) {
+    //             $this->load->model('addons/Certificate_model', 'certificate_model');
+    //             $this->certificate_model->check_certificate_eligibility($course_id, $user_id);
+    //         }
+    //     }
+
+    //     return json_encode(array('lesson_id' => $lesson_id, 'course_progress' => round($course_progress), 'is_completed' => $is_completed));
+    // }
 
 
 

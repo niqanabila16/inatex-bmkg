@@ -329,12 +329,21 @@ class Api extends REST_Controller {
     foreach ($quiz_questions as $quiz_question) {
       $submitted_answer_status = 0;
       $correct_answers = json_decode($quiz_question['correct_answers']);
+      // $submitted_answers = array();
+      // foreach ($this->input->post($quiz_question['id']) as $each_submission) {
+      //   if (isset($each_submission)) {
+      //     array_push($submitted_answers, $each_submission);
+      //   }
+      // }
+      $submitted_data = (array) $this->input->post($quiz_question['id']); 
       $submitted_answers = array();
-      foreach ($this->input->post($quiz_question['id']) as $each_submission) {
-        if (isset($each_submission)) {
-          array_push($submitted_answers, $each_submission);
-        }
+
+      foreach ($submitted_data as $each_submission) {
+          if (!empty($each_submission)) {
+              $submitted_answers[] = trim($each_submission);
+          }
       }
+
       sort($correct_answers);
       sort($submitted_answers);
       if ($correct_answers == $submitted_answers) {
