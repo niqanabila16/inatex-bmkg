@@ -100,12 +100,12 @@ $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
                                             <span class="d-none d-sm-inline"><?php echo get_phrase('outcomes'); ?></span>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    <!-- <li class="nav-item">
                                         <a href="#pricing" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
                                             <i class="mdi mdi-currency-cny"></i>
                                             <span class="d-none d-sm-inline"><?php echo get_phrase('pricing'); ?></span>
                                         </a>
-                                    </li>
+                                    </li> -->
                                     <li class="nav-item">
                                         <a href="#media" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
                                             <i class="mdi mdi-library-video"></i>
@@ -456,7 +456,7 @@ $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane" id="pricing">
+                                    <!-- <div class="tab-pane" id="pricing">
                                         <div class="row justify-content-center">
                                             <div class="col-xl-8">
                                                 <div class="form-group row mb-3">
@@ -493,9 +493,9 @@ $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> <!-- end col -->
-                                        </div> <!-- end row -->
-                                    </div> <!-- end tab-pane -->
+                                            </div>
+                                        </div>
+                                    </div> -->
                                     <div class="tab-pane" id="media">
                                         <div class="row justify-content-center">
 

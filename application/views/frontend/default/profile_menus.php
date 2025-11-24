@@ -41,7 +41,7 @@ $unreaded_message = $this->db->get()->num_rows();
         </a>
       </li>
 
-      <li class="<?php if($page_name == 'purchase_history' || $page_name == 'invoice') echo 'active'; ?>"><a href="<?php echo site_url('home/purchase_history'); ?>"> <i class="fas fa-history"></i> <?php echo site_phrase('purchase_history'); ?></a></li>
+      <!-- <li class="<?php if($page_name == 'purchase_history' || $page_name == 'invoice') echo 'active'; ?>"><a href="<?php echo site_url('home/purchase_history'); ?>"> <i class="fas fa-history"></i> <?php echo site_phrase('purchase_history'); ?></a></li> -->
 
       <li class="<?php if($page_name == 'user_profile' || $page_name == 'user_credentials' || $page_name == 'update_user_photo') echo 'active'; ?>"><a href="<?php echo site_url('home/profile/user_profile'); ?>"> <i class="far fa-user-circle"></i> <?php echo site_phrase('profile'); ?></a></li>
     </ul>

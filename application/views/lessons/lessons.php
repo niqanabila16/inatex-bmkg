@@ -29,7 +29,7 @@ $course_details_url = site_url("home/course/".slugify($course_details['title']).
 </style>
     <!-- Top bar -->
     <div class="row">
-        <div class="col-md-12 col-lg-7 col-xl-9 course_header_col d-md-flex d-sm-grid">
+        <div class="col-md-12 col-lg-7 col-xl-12 course_header_col d-md-flex d-sm-grid">
             <h5>
                 <img src="<?php echo base_url('uploads/system/').get_frontend_settings('small_logo');?>" height="25"> |
                 <?php echo $course_details['title']; ?>

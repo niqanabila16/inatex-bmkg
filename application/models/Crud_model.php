@@ -5,6 +5,9 @@ if (file_exists("application/aws-module/aws-autoloader.php")) {
     include APPPATH . 'aws-module/aws-autoloader.php';
 }
 //v5.7
+/**
+ * @property CI_input $input
+ */
 class Crud_model extends CI_Model
 {
 
@@ -509,11 +512,11 @@ class Crud_model extends CI_Model
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
         $data['category_id'] = $category_details['parent'];
         $data['requirements'] = $requirements;
-        $data['price'] = $this->input->post('price');
-        $data['discount_flag'] = $this->input->post('discount_flag');
-        $data['discounted_price'] = $this->input->post('discounted_price');
+        $data['price'] = 0; // `$this->input->post('price');`
+        $data['discount_flag'] = null; // `$this->input->post('discount_flag');`
+        $data['discounted_price'] = 0; // `$this->input->post('discounted_price');`
         $data['level'] = $this->input->post('level');
-        $data['is_free_course'] = $this->input->post('is_free_course');
+        $data['is_free_course'] = 1; // `$this->input->post('is_free_course');`
         $data['video_url'] = html_escape($this->input->post('course_overview_url'));
 
         $enable_drip_content = $this->input->post('enable_drip_content');
@@ -658,10 +661,10 @@ class Crud_model extends CI_Model
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
         $data['category_id'] = $category_details['parent'];
         $data['requirements'] = $requirements;
-        $data['is_free_course'] = $this->input->post('is_free_course');
-        $data['price'] = $this->input->post('price');
-        $data['discount_flag'] = $this->input->post('discount_flag');
-        $data['discounted_price'] = $this->input->post('discounted_price');
+        // $data['is_free_course'] = $this->input->post('is_free_course');
+        // $data['price'] = $this->input->post('price');
+        // $data['discount_flag'] = $this->input->post('discount_flag');
+        // $data['discounted_price'] = $this->input->post('discounted_price');
         $data['level'] = $this->input->post('level');
         $data['video_url'] = $this->input->post('course_overview_url');
         
@@ -1314,7 +1317,7 @@ class Crud_model extends CI_Model
 
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = htmlspecialchars($this->input->post('free_lesson'));
+        $data['is_free'] = 1; // htmlspecialchars($this->input->post('free_lesson'));
 
 
         $this->db->insert('lesson', $data);
@@ -1586,7 +1589,7 @@ class Crud_model extends CI_Model
 
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars(remove_js($this->input->post('summary', false)));
-        $data['is_free'] = htmlspecialchars($this->input->post('free_lesson'));
+        $data['is_free'] = 1; // htmlspecialchars($this->input->post('free_lesson'));
 
         $this->db->where('id', $lesson_id);
         $this->db->update('lesson', $data);
@@ -1839,6 +1842,13 @@ class Crud_model extends CI_Model
             } else {
                 $data['date_added'] = strtotime(date('D, d-M-Y'));
                 $this->db->insert('enrol', $data);
+                $this->db->insert('watch_histories', [
+                    'course_id' => $course_id,
+                    'student_id' => $user_id,
+                    'course_progress' => 0,
+                    'date_added' => $data['date_added'],
+                    'date_updated' => $data['date_added']
+                ]);
                 $this->session->set_flashdata('flash_message', get_phrase('successfully_enrolled'));
             }
         } else {
@@ -1992,7 +2002,7 @@ class Crud_model extends CI_Model
         if($reviews->num_rows() > 0){
             return $reviews->row_array();
         }else{
-            return array('rating' => 0);
+            return array('rating' => 0, 'review' => '');
         }
     }
 

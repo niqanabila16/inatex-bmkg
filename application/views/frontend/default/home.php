@@ -179,7 +179,7 @@
 
 
 
-                                                <?php if ($latest_course['is_free_course'] == 1) : ?>
+                                                <!-- <?php if ($latest_course['is_free_course'] == 1) : ?>
                                                     <p class="price text-right d-inline-block float-end"><?php echo site_phrase('free'); ?></p>
                                                 <?php else : ?>
                                                     <?php if ($latest_course['discount_flag'] == 1) : ?>
@@ -187,7 +187,7 @@
                                                     <?php else : ?>
                                                         <p class="price text-right d-inline-block float-end"><?php echo currency($latest_course['price']); ?></p>
                                                     <?php endif; ?>
-                                                <?php endif; ?>
+                                                <?php endif; ?> -->
                                             </div>
                                         </div>
                                     </div>
@@ -289,7 +289,7 @@
                                     <a class="text-decoration-none" href="<?php echo site_url('home/instructor_page/'.$top_instructor['id']); ?>">
                                         <h4 class="mb-1 fw-700"><?php echo $top_instructor['first_name'].' '.$top_instructor['last_name']; ?></h4>
                                         <span class="fw-500 text-muted text-14px"><?php echo ellipsis($top_instructor['title'], 60); ?></span>
-                                        <p class="text-12px fw-500 text-muted my-3"><?php echo ellipsis(strip_tags($top_instructor['biography']),100); ?></p>
+                                        <p class="text-12px fw-500 text-muted my-3"><?php echo ellipsis(strip_tags($top_instructor['biography'] or ""),100); ?></p>
 
                                         <?php $skills = explode(',', $top_instructor['skills']); ?>
                                         <?php foreach($skills as $skill): ?>

@@ -19,12 +19,27 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-
                 <h4 class="header-title mb-4"><?php echo get_phrase('admin_revenue_this_year'); ?></h4>
 
-                <div class="mt-3 chartjs-chart" style="height: 320px;">
+                <!-- <div class="col-xl-2"> -->
+                    <form class="form-group row" action="<?php echo site_url('admin/dashboard'); ?>" method="get">
+                        <label class="col-md-1 col-form-label" for="year"><?php echo get_phrase('year'); ?>:</label>
+                        <div class="col-md-3">
+                        <select class="form-control select2" data-toggle="select2" name="year_vie" id="year_vie">
+                            <option value="all"><?php echo get_phrase('all'); ?></option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                        </div>
+                </form>
+                <!-- </div> -->
+
+                <div id="slg-map" style="height: 400px;"></div>
+
+                <!-- <div class="mt-3 chartjs-chart" style="height: 320px;">
                     <canvas id="task-area-chart"></canvas>
-                </div>
+                </div> -->
             </div> <!-- end card body-->
         </div> <!-- end card -->
     </div><!-- end col-->

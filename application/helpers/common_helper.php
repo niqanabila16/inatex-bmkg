@@ -265,7 +265,13 @@ if (!function_exists('ellipsis')) {
     // Checks if a video is youtube, vimeo or any other
     function ellipsis($long_string, $max_character = 30)
     {
-        $short_string = strlen($long_string) > $max_character ? mb_substr($long_string, 0, $max_character) . "..." : $long_string;
+        if ($long_string == null):
+            $short_string = "...";
+        else:
+            $short_string = strlen($long_string) > $max_character 
+                ? mb_substr($long_string, 0, $max_character) . "..." 
+                : $long_string;
+        endif;
         return $short_string;
     }
 }

@@ -330,7 +330,7 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
 
                     
                     <div class="description">
-                      <?php echo ellipsis(strip_tags($instructor_details['biography']), 180); ?>
+                      <?php echo ellipsis(strip_tags($instructor_details['biography'] or ""), 180); ?>
                     </div>
                 </div>
             </div>
@@ -467,9 +467,9 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
 
           <div class="course-sidebar-text-box">
             <div class="price text-center">
-              <?php if ($course_details['is_free_course'] == 1) : ?>
+              <!-- <?php if ($course_details['is_free_course'] == 1) : ?>
                 <span class="current-price"><span class="current-price"><?php echo site_phrase('free'); ?></span></span>
-              <?php else : ?>
+              <?php else : ?> -->
                 <?php if ($course_details['discount_flag'] == 1) : ?>
                   <span class="original-price"><?php echo currency($course_details['price']) ?></span>
                   <span class="current-price"><span class="current-price"><?php echo currency($course_details['discounted_price']); ?></span></span>
@@ -478,7 +478,7 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
                   <span class="current-price"><span class="current-price"><?php echo currency($course_details['price']); ?></span></span>
                   <input type="hidden" id="total_price_of_checking_out" value="<?php echo currency($course_details['price']); ?>">
                 <?php endif; ?>
-              <?php endif; ?>
+              <!-- <?php endif; ?> -->
             </div>
 
             <?php if (is_purchased($course_details['id'])) : ?>
@@ -557,8 +557,9 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
   if ($course_details['course_overview_provider'] == "html5") {
     $provider = 'html5';
   } else {
-    $video_details = $this->video_model->getVideoDetails($course_details['video_url']);
-    $provider = $video_details['provider'];
+    // $video_details = $this->video_model->getVideoDetails($course_details['video_url']);
+    // $provider = $video_details['provider'];
+    $provider = "youtube"; // Ini buat sëmëntara ya!
   }
 ?>
   <div class="modal fade" id="CoursePreviewModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
